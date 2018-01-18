@@ -18,11 +18,13 @@ class Overwork extends React.Component {
 
   render () {
     let causes = this.overwork()
+    if (causes.length === 0) {
+      return <div />
+    }
     return (
-      <div>
-        <ul>
-          {JSON.stringify(causes)}
-        </ul>
+      <div className='tc w-80 center pa4 bg-dark-red br3 white-90 f4'>
+        <h3 className='ma0 f2 mb3'>這是一份過勞班表！</h3>
+        <span>{JSON.stringify(causes)}</span>
       </div>
     )
   }

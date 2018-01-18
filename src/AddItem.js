@@ -70,35 +70,35 @@ class AddItem extends React.Component {
   render () {
     console.log(this.state)
     return (
-      <div className='col-sm-12 text-center'>
-        <label>起始時間：</label>
+      <div className='w-100 tc'>
+        <span className='dib'>新增工作時段：</span>
         <input
           type='date'
           ref='startDate'
           onKeyDown={this.onKeyDown.bind(this)}
           onBlur={this.onBlur.bind(this)}
-          className={`ba pa1 w-100 ${this.state.highlightStart ? 'b--dark-red' : ''}`} />
+          className={`dib ba ma1 pa1 ${this.state.highlightStart ? 'b--dark-red' : ''}`} />
         <input
           type='time'
           ref='startTime'
           onKeyDown={this.onKeyDown.bind(this)}
           onBlur={this.onBlur.bind(this)}
-          className={`ba w-100 ${this.state.highlightStart ? 'b--dark-red' : ''}`} />
-        <label>結束時間：</label>
+          className={`ba pa1 ma1 ${this.state.highlightStart ? 'b--dark-red' : ''}`} />
+        <span className='ml1 mr1'>→</span>
         <input
           type='date'
           ref='endDate'
           onKeyDown={this.onKeyDown.bind(this)}
           onBlur={this.onBlur.bind(this)}
-          className={`ba w-100 ${this.state.highlightEnd ? 'b--dark-red' : ''}`} />
+          className={`ba pa1 ma1 ${this.state.highlightEnd ? 'b--dark-red' : ''}`} />
         <input
           type='time'
           ref='endTime'
           onKeyDown={this.onKeyDown.bind(this)}
           onBlur={this.onBlur.bind(this)}
-          className={`ba w-100 ${this.state.highlightEnd ? 'b--dark-red' : ''}`} />
+          className={`ba pa1 ma1 ${this.state.highlightEnd ? 'b--dark-red' : ''}`} />
         <button onClick={this.handleAdd.bind(this)}>新增</button>
-        <button onClick={this.handleSubmit.bind(this)}>發佈</button>
+        <button onClick={this.handleSubmit.bind(this)}>儲存並發佈</button>
       </div>
     )
   }

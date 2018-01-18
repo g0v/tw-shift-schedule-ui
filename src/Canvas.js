@@ -53,8 +53,18 @@ class Canvas extends React.Component {
   }
 
   render () {
+    if (!this.props.shifts || this.props.shifts.length === 0) {
+      return (
+        <div />
+      )
+    }
     let tokens = this.shiftTokens()
     console.log(tokens)
+
+    let segments = []
+    for (let t of tokens) {
+
+    }
 
     let items = this.listItems()
     let listItems = items.map((item, index) => {

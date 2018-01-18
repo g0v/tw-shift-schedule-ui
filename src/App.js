@@ -74,8 +74,12 @@ class App extends Component {
 
   render () {
     return (
-      <div className='col-sm-12'>
-        <h3 className='text-center'> re-base Todo List </h3>
+      <div className='tc'>
+        <h1 className='f-6'>班表小幫手</h1>
+        <div className='f2'>
+          在合法的班表中，依然可以隱藏大量過勞的細節。<br />
+          隱藏工時、班與班之間的休息與待命...等等都是班表上難以察覺的陷阱。
+        </div>
         {this.state.edit ? <AddItem
           onAdd={this.handleAddItem.bind(this)}
           onSubmit={this.handleSubmit.bind(this)}
