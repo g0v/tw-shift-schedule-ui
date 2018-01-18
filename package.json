@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "konva": "^1.7.6",
     "moment": "^2.20.1",
     "re-base": "^3.2.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-konva": "^1.6.5",
     "react-scripts": "1.1.0",
     "tw-shift-schedule": "^0.0.7"
   },

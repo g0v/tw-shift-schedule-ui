@@ -5,6 +5,7 @@ import AddItem from './AddItem'
 import base from './rebase'
 import Overwork from './Overwork'
 import moment from 'moment'
+import Canvas from './Canvas'
 
 class App extends Component {
   constructor (props) {
@@ -83,6 +84,9 @@ class App extends Component {
                 ? <h3> LOADING... </h3>
                 : <div>
                   <Overwork shifts={this.state.shifts} />
+                  <Canvas
+                    shifts={this.state.shifts}
+                    onDelete={this.handleDelete.bind(this)} />
                   <List
                     shifts={this.state.shifts}
                     onDelete={this.handleDelete.bind(this)}

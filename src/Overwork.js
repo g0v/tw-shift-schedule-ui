@@ -1,4 +1,3 @@
-import moment from 'moment'
 import shift from 'tw-shift-schedule'
 
 var React = require('react')
@@ -20,8 +19,8 @@ class Overwork extends React.Component {
   render () {
     let causes = this.overwork()
     return (
-      <div className='col-sm-12'>
-        <ul className='list-group'>
+      <div>
+        <ul>
           {JSON.stringify(causes)}
         </ul>
       </div>
