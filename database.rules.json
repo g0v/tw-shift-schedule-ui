@@ -1,0 +1,16 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": false,
+    "workspaces": {
+			".read":  true,
+      ".write": true
+    },
+    "published": {
+      "$id": {
+      	".read": true,
+      	".write": "!data.exists()"
+      }
+    }
+  }
+}
