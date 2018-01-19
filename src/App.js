@@ -80,9 +80,10 @@ class App extends Component {
     return (
       <div className='tc'>
         <h1 className='f-6'>班表小幫手</h1>
-        <div className='f2'>
-          在合法的班表中，依然可以隱藏大量過勞的細節。<br />
-          隱藏工時、班與班之間的休息與待命...等等都是班表上難以察覺的陷阱。
+        <div className='f2 pa4'>
+          合法的班表中可能隱藏了過勞的細節。<br />
+          隱藏工時、班表之間的休息或待命...等等，都是班表上難以察覺的陷阱。<br />
+          輸入班表，讓機器來檢查是否合法、是否可能過勞吧
         </div>
         {this.state.edit ? <AddItem
           onAdd={this.handleAddItem.bind(this)}

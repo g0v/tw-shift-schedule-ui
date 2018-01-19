@@ -222,23 +222,34 @@ class Canvas extends React.Component {
     }
 
     return (
-      <Stage width={820} height={height}>
-        <Layer>
-          {grid}
-        </Layer>
-        <Layer>
-          {listItems}
-          {hiddens}
-          {listItemlabels}
-        </Layer>
-        <Layer>
-          {dates}
-        </Layer>
-        <Layer>
-          {rowLines}
-          {segments}
-        </Layer>
-      </Stage>
+      <div>
+        <Stage width={820} height={height}>
+          <Layer>
+            {grid}
+          </Layer>
+          <Layer>
+            {listItems}
+            {hiddens}
+            {listItemlabels}
+          </Layer>
+          <Layer>
+            {dates}
+          </Layer>
+          <Layer>
+            {rowLines}
+            {segments}
+          </Layer>
+        </Stage>
+        <div>
+          圖例：
+          <ul>
+            <li>灰色方塊：記載的工時</li>
+            <li>粉紅方塊：隱藏工時</li>
+            <li>藍色底線：依照勞基法分出來的工作時段（包含中間休息）</li>
+            <li>紅色底線：無法合法切出工作時段</li>
+          </ul>
+        </div>
+      </div>
     )
   }
 };

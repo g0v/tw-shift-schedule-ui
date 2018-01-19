@@ -42,7 +42,8 @@ class List extends React.Component {
     let i = 0
 
     var listItems = this.listItems().map((item, index) => {
-      if (item.type === 'work') i++
+      if (item.type !== 'work') return
+      i++
 
       return (
         <li key={index} className={``}>
@@ -59,8 +60,8 @@ class List extends React.Component {
     })
 
     return (
-      <div className='col-sm-12'>
-        <ul className='list-group'>
+      <div className='w-80 pa4'>
+        <ul className=''>
           {listItems}
         </ul>
       </div>
