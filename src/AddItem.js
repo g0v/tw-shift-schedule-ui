@@ -63,10 +63,6 @@ class AddItem extends React.Component {
     }
   }
 
-  handleSubmit (e) {
-    this.props.onSubmit(e)
-  }
-
   render () {
     console.log(this.state)
     return (
@@ -98,7 +94,6 @@ class AddItem extends React.Component {
           onBlur={this.onBlur.bind(this)}
           className={`ba pa1 ma1 ${this.state.highlightEnd ? 'b--dark-red' : ''}`} />
         <button onClick={this.handleAdd.bind(this)}>新增</button>
-        <button onClick={this.handleSubmit.bind(this)}>儲存並發佈</button>
       </div>
     )
   }

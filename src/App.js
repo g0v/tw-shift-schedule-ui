@@ -63,6 +63,7 @@ class App extends Component {
     let newLocation = await base.push(`published`, {data: this.state.shifts})
     let publishID = newLocation.key
     console.log(publishID)
+    await base.post(`metadata/${publishID}`, {data: this.state.settings})
     window.history.pushState({publish: publishID}, 'published', publishID)
   }
 
@@ -97,6 +98,7 @@ class App extends Component {
            /> : ''}
         <Overwork settings={this.state.settings} shifts={this.state.shifts} />
         <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
+        {this.state.edit ? <button onClick={this.handleSubmit.bind(this)}>儲存並發佈</button> : ''}
         {this.state.loading === true
                 ? <h3> LOADING... </h3>
                 : <div className='center' style={{width: '820px'}}>
