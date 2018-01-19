@@ -39,8 +39,6 @@ class List extends React.Component {
   }
 
   render () {
-    let tokens = this.shiftTokens()
-
     let i = 0
 
     var listItems = this.listItems().map((item, index) => {

@@ -12,7 +12,6 @@ class Overwork extends React.Component {
     }
 
     let overwork = shift.overwork.check(shift.Schedule.fromTime(shifts))
-    console.log(overwork)
     return overwork
   }
 

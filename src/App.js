@@ -28,16 +28,13 @@ class App extends Component {
       publishID = path[1]
       this.setState({edit: false})
       let data = await base.fetch(`published/${publishID}`, { context: this, asArray: true })
-      console.log(data)
+      let settings = await base.fetch(`metadata/${publishID}`, {context: this})
       this.setState({
         publishID: publishID,
         shifts: data,
-        loading: false
+        loading: false,
+        settings
       })
-
-      let settings = await base.fetch(`metadata/${publishID}`, {context: this})
-      console.log(settings)
-      this.setState({settings})
     } else {
       this.setState({
         loading: false
@@ -59,10 +56,8 @@ class App extends Component {
   }
 
   async submit () {
-    console.log(base)
     let newLocation = await base.push(`published`, {data: this.state.shifts})
     let publishID = newLocation.key
-    console.log(publishID)
     await base.post(`metadata/${publishID}`, {data: this.state.settings})
     window.history.pushState({publish: publishID}, 'published', publishID)
   }
@@ -72,15 +67,12 @@ class App extends Component {
   }
 
   handleDelete (i) {
-    console.log('deleting', i)
     let newShifts = this.state.shifts
     newShifts.splice(i, 1)
-    console.log('after delete', newShifts)
     this.setState({shifts: newShifts})
   }
 
   handleSettingUpdate (settings) {
-    console.log('setting update', settings)
     this.setState({settings: settings})
   }
 

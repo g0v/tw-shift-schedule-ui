@@ -10,7 +10,6 @@ class Setting extends React.Component {
   }
 
   render () {
-    console.log('render settings', this.props)
     return (
       <div className='center br3 w-80 pa3 tc bg-black-10'>
         <h4>設定</h4>

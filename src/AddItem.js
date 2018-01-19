@@ -64,7 +64,6 @@ class AddItem extends React.Component {
   }
 
   render () {
-    console.log(this.state)
     return (
       <div className='w-100 tc'>
         <span className='dib'>新增工作時段：</span>

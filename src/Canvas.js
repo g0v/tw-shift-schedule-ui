@@ -6,16 +6,18 @@ import {Stage, Layer, Rect, Text, Line} from 'react-konva'
 var React = require('react')
 
 class Canvas extends React.Component {
-  listItems () {
+  listItems (raw) {
     let {settings} = this.props
     if (!this.props.shifts || this.props.shifts.length === 0) return []
     let items = []
     for (let item of this.props.shifts) {
       let m = momentFromItem(item)
       m.type = 'work'
-      m.start.subtract(settings.hiddenBefore, 'minutes')
-      m.end.add(settings.hiddenAfter, 'minutes')
-      m.length += (settings.hiddenBefore + settings.hiddenAfter)
+      if (!raw) {
+        m.start.subtract(settings.hiddenBefore, 'minutes')
+        m.end.add(settings.hiddenAfter, 'minutes')
+        m.length += (settings.hiddenBefore + settings.hiddenAfter)
+      }
 
       // 如果跨日就切成兩個
       if (m.start.day() !== m.end.day()) {
@@ -51,28 +53,63 @@ class Canvas extends React.Component {
     for (let item of this.props.shifts) {
       shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
     }
-
     console.log('shifts', shifts)
+
     let tokens = shift.tokenizer(shift.Schedule.fromTime(shifts))
+    console.log('shift tokens', tokens)
     return tokens
   }
 
   render () {
+    console.log('rendering')
+    // items = 加上隱藏工時後的班表
+    let items = this.listItems()
+    // rawItems = 未加上隱藏工時的班表
+    let rawItems = this.listItems(true)
     let {settings} = this.props
+    let tokens = this.shiftTokens()
+
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
         <div />
       )
     }
-    let tokens = this.shiftTokens()
-    console.log(tokens)
 
+    // 顯示依照法律切段的班表
     let segments = []
-    for (let t of tokens) {
+    let startTime = rawItems[0].start.clone()
+    // 如果 未加上隱藏工時 跟 加上隱藏工時候的班表起始日不同，代表隱藏工時讓班表跨日了，需要調整上班區間的顯示位置
+    let rowOffset = (rawItems[0].start.date() !== items[0].start.date() ? 1 : 0)
+    let segmentStartTime = startTime.clone()
+    for (let i = 0; i < tokens.length; i++) {
+      let token = tokens[i]
 
+      let row = segmentStartTime.date() - startTime.date() + rowOffset
+
+      let segLineStart = segmentStartTime.diff(segmentStartTime.clone().startOf('day'), 'minutes') / 2 + 100
+      if (token.type === 'work') {
+        segments.push(
+          <Line
+            key={segmentStartTime.format() + `${i}`}
+            points={[segLineStart, row * 50 + 70, segLineStart + token.value.length / 2, row * 50 + 70]}
+            stroke='blue'
+          />
+        )
+      }
+      if (token.type === 'invalid') {
+        segments.push(
+          <Line
+            key={segmentStartTime.format() + `${i}` + '-'}
+            points={[segLineStart, row * 50 + 70, segLineStart + token.value.length / 2, row * 50 + 70]}
+            stroke='red'
+            strokeWidth={5}
+          />
+        )
+      }
+      segmentStartTime.add(token.value.length, 'minutes')
     }
 
-    let items = this.listItems()
+    // 顯示班表
     let listItems = items.map((item, index) => {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
       let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
@@ -92,6 +129,7 @@ class Canvas extends React.Component {
       )
     })
 
+    // 顯示班的時間長度
     let listItemlabels = items.map((item, index) => {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
       let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
@@ -104,6 +142,7 @@ class Canvas extends React.Component {
       )
     })
 
+    // 顯示隱藏工時
     let hiddens = []
     let j = 0
     if (settings.hiddenBefore > 0 || settings.hiddenAfter > 0) {
@@ -123,7 +162,7 @@ class Canvas extends React.Component {
               onMouseLeave={() => {
                 document.body.style.cursor = 'default'
               }}
-              fill='#ffffad' />
+              fill='#ffb2bc' />
           )
           j++
         }
@@ -140,13 +179,14 @@ class Canvas extends React.Component {
               onMouseLeave={() => {
                 document.body.style.cursor = 'default'
               }}
-              fill='#ffffad' />
+              fill='#ffb2bc' />
           )
           j++
         }
       }
     }
 
+    // 顯示時間座標
     let grid = []
     for (let i = 0; i < 24; i++) {
       grid.push(
@@ -160,6 +200,7 @@ class Canvas extends React.Component {
     let rowCount = (items[items.length - 1].start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') + 1)
     let height = rowCount * 50 + 20
 
+    // 顯示日期座標
     let dates = []
     for (let i = 0; i < rowCount; i++) {
       dates.push(
@@ -195,6 +236,7 @@ class Canvas extends React.Component {
         </Layer>
         <Layer>
           {rowLines}
+          {segments}
         </Layer>
       </Stage>
     )
