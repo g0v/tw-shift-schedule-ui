@@ -1,6 +1,6 @@
 
 import moment from 'moment'
-import shift from 'tw-shift-schedule'
+import shift from './tw-shift-schedule'
 import {Stage, Layer, Rect, Text, Line} from 'react-konva'
 
 var React = require('react')

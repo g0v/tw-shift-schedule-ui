@@ -11,6 +11,12 @@
       	".read": true,
       	".write": "!data.exists()"
       }
+    },
+    "metadata": {
+      "$id": {
+        ".read": true,
+        ".write": "!data.exists()"
+      }
     }
   }
 }

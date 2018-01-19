@@ -1,5 +1,5 @@
 import moment from 'moment'
-import shift from 'tw-shift-schedule'
+import shift from './tw-shift-schedule'
 
 var React = require('react')
 

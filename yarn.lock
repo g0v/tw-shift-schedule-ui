@@ -6190,13 +6190,6 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tw-shift-schedule@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/tw-shift-schedule/-/tw-shift-schedule-0.0.7.tgz#0a25369086501693dd938807a0e5b1d1b192f339"
-  dependencies:
-    moment "^2.20.1"
-    moo "^0.4.3"
-
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
