@@ -54,7 +54,7 @@ class List extends React.Component {
           </div>
           <div>
             {item.start.format('YYYY-MM-DD HH:mm')} → {item.end.format('YYYY-MM-DD HH:mm')}
-            {item.type === 'work' ? <a href={`#delete${i}`} onClick={this.props.onDelete.bind(null, i - 1)}> [x] </a> : ''}
+            {this.props.edit && item.type === 'work' ? <a href={`#delete${i}`} onClick={this.props.onDelete.bind(null, i - 1)}> [x] </a> : ''}
           </div>
         </li>
       )

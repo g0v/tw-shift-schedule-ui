@@ -34,6 +34,10 @@ class App extends Component {
         shifts: data,
         loading: false
       })
+
+      let settings = await base.fetch(`metadata/${publishID}`, {context: this})
+      console.log(settings)
+      this.setState({settings})
     } else {
       this.setState({
         loading: false
@@ -75,7 +79,7 @@ class App extends Component {
   }
 
   handleSettingUpdate (settings) {
-    console.log(settings)
+    console.log('setting update', settings)
     this.setState({settings: settings})
   }
 
@@ -92,10 +96,10 @@ class App extends Component {
           onSubmit={this.handleSubmit.bind(this)}
            /> : ''}
         <Overwork settings={this.state.settings} shifts={this.state.shifts} />
-        <Setting onUpdate={this.handleSettingUpdate.bind(this)} />
+        <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
         {this.state.loading === true
                 ? <h3> LOADING... </h3>
-                : <div>
+                : <div className='center' style={{width: '820px'}}>
                   <Canvas
                     settings={this.state.settings}
                     shifts={this.state.shifts}
@@ -104,6 +108,7 @@ class App extends Component {
                     settings={this.state.settings}
                     shifts={this.state.shifts}
                     onDelete={this.handleDelete.bind(this)}
+                    edit={this.state.edit}
                   />
                 </div>}
       </div>
