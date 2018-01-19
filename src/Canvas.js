@@ -2,17 +2,20 @@
 import moment from 'moment'
 import shift from 'tw-shift-schedule'
 import {Stage, Layer, Rect, Text, Line} from 'react-konva'
-import Konva from 'konva'
 
 var React = require('react')
 
 class Canvas extends React.Component {
   listItems () {
+    let {settings} = this.props
     if (!this.props.shifts || this.props.shifts.length === 0) return []
     let items = []
     for (let item of this.props.shifts) {
       let m = momentFromItem(item)
       m.type = 'work'
+      m.start.subtract(settings.hiddenBefore, 'minutes')
+      m.end.add(settings.hiddenAfter, 'minutes')
+      m.length += (settings.hiddenBefore + settings.hiddenAfter)
 
       // 如果跨日就切成兩個
       if (m.start.day() !== m.end.day()) {
@@ -22,7 +25,8 @@ class Canvas extends React.Component {
           start: s1,
           end: e1,
           length: e1.diff(s1, 'minutes'),
-          type: 'work'
+          type: 'work',
+          split: 'head'
         })
         let s2 = m.end.clone().startOf('day')
         let e2 = m.end.clone()
@@ -30,7 +34,8 @@ class Canvas extends React.Component {
           start: s2,
           end: e2,
           length: e2.diff(s2, 'minutes'),
-          type: 'work'
+          type: 'work',
+          split: 'tail'
         })
       } else {
         items.push(m)
@@ -53,6 +58,7 @@ class Canvas extends React.Component {
   }
 
   render () {
+    let {settings} = this.props
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
         <div />
@@ -71,7 +77,7 @@ class Canvas extends React.Component {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
       let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
       return (
-        <Rect key={index}
+        <Rect key={item.start.format()}
           x={x}
           y={y}
           width={item.length / 2}
@@ -82,20 +88,64 @@ class Canvas extends React.Component {
           onMouseLeave={() => {
             document.body.style.cursor = 'default'
           }}
-          fill='#cccccc' />
+          fill='#dddddd' />
       )
     })
+
     let listItemlabels = items.map((item, index) => {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
       let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
       return (
-        <Text key={index}
+        <Text key={item.start.format()}
           x={x}
           y={y}
-          text={`${Math.floor(item.length / 60)} 時 ${items.length % 60} 分`}
+          text={`${Math.floor(item.length / 60)} 時 ${item.length % 60} 分`}
           color='black' />
       )
     })
+
+    let hiddens = []
+    let j = 0
+    if (settings.hiddenBefore > 0 || settings.hiddenAfter > 0) {
+      for (let item of items) {
+        let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
+        let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
+        if (!item.split || item.split === 'head') {
+          hiddens.push(
+            <Rect key={item.start.format() + `${j}`}
+              x={x}
+              y={y}
+              width={settings.hiddenBefore / 2}
+              height={50}
+              onMouseEnter={() => {
+                document.body.style.cursor = 'pointer'
+              }}
+              onMouseLeave={() => {
+                document.body.style.cursor = 'default'
+              }}
+              fill='#ffffad' />
+          )
+          j++
+        }
+        if (!item.split || item.split !== 'tail') {
+          hiddens.push(
+            <Rect key={item.start.format() + `${j}`}
+              x={x + item.length / 2 - settings.hiddenAfter / 2}
+              y={y}
+              width={settings.hiddenAfter / 2}
+              height={50}
+              onMouseEnter={() => {
+                document.body.style.cursor = 'pointer'
+              }}
+              onMouseLeave={() => {
+                document.body.style.cursor = 'default'
+              }}
+              fill='#ffffad' />
+          )
+          j++
+        }
+      }
+    }
 
     let grid = []
     for (let i = 0; i < 24; i++) {
@@ -125,7 +175,7 @@ class Canvas extends React.Component {
         <Line
           key={i}
           points={[0, i * 50 + 70, 820, i * 50 + 70]}
-          stroke='#dddddd'
+          stroke='#eeeeee'
           />
       )
     }
@@ -137,6 +187,7 @@ class Canvas extends React.Component {
         </Layer>
         <Layer>
           {listItems}
+          {hiddens}
           {listItemlabels}
         </Layer>
         <Layer>

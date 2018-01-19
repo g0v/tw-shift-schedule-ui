@@ -6,6 +6,7 @@ import base from './rebase'
 import Overwork from './Overwork'
 import moment from 'moment'
 import Canvas from './Canvas'
+import Setting from './Setting'
 
 class App extends Component {
   constructor (props) {
@@ -14,7 +15,8 @@ class App extends Component {
       shifts: [],
       publishID: undefined,
       loading: true,
-      edit: true
+      edit: true,
+      settings: {hiddenBefore: 0, hiddenAfter: 0}
     }
   }
 
@@ -72,6 +74,11 @@ class App extends Component {
     this.setState({shifts: newShifts})
   }
 
+  handleSettingUpdate (settings) {
+    console.log(settings)
+    this.setState({settings: settings})
+  }
+
   render () {
     return (
       <div className='tc'>
@@ -84,14 +91,17 @@ class App extends Component {
           onAdd={this.handleAddItem.bind(this)}
           onSubmit={this.handleSubmit.bind(this)}
            /> : ''}
+        <Overwork settings={this.state.settings} shifts={this.state.shifts} />
+        <Setting onUpdate={this.handleSettingUpdate.bind(this)} />
         {this.state.loading === true
                 ? <h3> LOADING... </h3>
                 : <div>
-                  <Overwork shifts={this.state.shifts} />
                   <Canvas
+                    settings={this.state.settings}
                     shifts={this.state.shifts}
                     onDelete={this.handleDelete.bind(this)} />
                   <List
+                    settings={this.state.settings}
                     shifts={this.state.shifts}
                     onDelete={this.handleDelete.bind(this)}
                   />
