@@ -84,6 +84,9 @@ class App extends Component {
           合法的班表中可能隱藏了過勞的細節。<br />
           隱藏工時、班表之間的休息或待命...等等，都是班表上難以察覺的陷阱。<br />
           輸入班表，讓機器來檢查是否合法、是否可能過勞吧
+          <p className='f4'>
+            過勞判定標準： http://www.mqjh.tp.edu.tw/mediafile/1901/news/19/2016-1/22016-1-24-21-27-24-nf1.pdf
+          </p>
         </div>
         {this.state.edit ? <AddItem
           onAdd={this.handleAddItem.bind(this)}
