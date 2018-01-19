@@ -127,7 +127,7 @@ class Canvas extends React.Component {
           )
           j++
         }
-        if (!item.split || item.split !== 'tail') {
+        if (!item.split || item.split === 'tail') {
           hiddens.push(
             <Rect key={item.start.format() + `${j}`}
               x={x + item.length / 2 - settings.hiddenAfter / 2}
