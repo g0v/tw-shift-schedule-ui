@@ -33,7 +33,6 @@ class List extends React.Component {
       shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
     }
 
-    console.log('shifts', shifts)
     let tokens = shift.tokenizer(shift.Schedule.fromTime(shifts))
     return tokens
   }

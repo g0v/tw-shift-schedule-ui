@@ -53,15 +53,12 @@ class Canvas extends React.Component {
     for (let item of this.props.shifts) {
       shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
     }
-    console.log('shifts', shifts)
 
     let tokens = shift.tokenizer(shift.Schedule.fromTime(shifts))
-    console.log('shift tokens', tokens)
     return tokens
   }
 
   render () {
-    console.log('rendering')
     // items = 加上隱藏工時後的班表
     let items = this.listItems()
     // rawItems = 未加上隱藏工時的班表
