@@ -1,5 +1,4 @@
 import moment from 'moment'
-import shift from './tw-shift-schedule'
 
 var React = require('react')
 
@@ -23,18 +22,6 @@ class List extends React.Component {
       items.push(m)
     }
     return items
-  }
-
-  shiftTokens () {
-    if (this.props.shifts.length === 0) return []
-
-    let shifts = []
-    for (let item of this.props.shifts) {
-      shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
-    }
-
-    let tokens = shift.tokenizer(shift.Schedule.fromTime(shifts))
-    return tokens
   }
 
   render () {

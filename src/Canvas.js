@@ -2,6 +2,7 @@
 import moment from 'moment'
 import shift from './tw-shift-schedule'
 import {Stage, Layer, Rect, Text, Line} from 'react-konva'
+import Grid from './Canvas/Grid'
 
 var React = require('react')
 
@@ -87,7 +88,7 @@ class Canvas extends React.Component {
       if (token.type === 'work') {
         segments.push(
           <Line
-            key={segmentStartTime.format() + `${i}`}
+            key={`${segmentStartTime.format()}-${i}`}
             points={[segLineStart, row * 50 + 70, segLineStart + token.value.length / 2, row * 50 + 70]}
             stroke='blue'
           />
@@ -96,7 +97,7 @@ class Canvas extends React.Component {
       if (token.type === 'invalid') {
         segments.push(
           <Line
-            key={segmentStartTime.format() + `${i}` + '-'}
+            key={`${segmentStartTime.format()}-${i}-`}
             points={[segLineStart, row * 50 + 70, segLineStart + token.value.length / 2, row * 50 + 70]}
             stroke='red'
             strokeWidth={5}
@@ -183,57 +184,19 @@ class Canvas extends React.Component {
       }
     }
 
-    // 顯示時間座標
-    let grid = []
-    for (let i = 0; i < 24; i++) {
-      grid.push(
-        <Text key={i}
-          text={`${i}`}
-          x={i * 30 + 100}
-          y={5} />
-      )
-    }
-
     let rowCount = (items[items.length - 1].start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') + 1)
     let height = rowCount * 50 + 20
-
-    // 顯示日期座標
-    let dates = []
-    for (let i = 0; i < rowCount; i++) {
-      dates.push(
-        <Text key={i}
-          text={items[0].start.clone().startOf('day').add(i, 'day').format('YYYY-MM-DD')}
-          x={10}
-          y={i * 50 + 40} />
-      )
-    }
-    let rowLines = []
-    for (let i = 0; i < rowCount; i++) {
-      rowLines.push(
-        <Line
-          key={i}
-          points={[0, i * 50 + 70, 820, i * 50 + 70]}
-          stroke='#eeeeee'
-          />
-      )
-    }
 
     return (
       <div>
         <Stage width={820} height={height}>
-          <Layer>
-            {grid}
-          </Layer>
+          <Grid shifts={items} />
           <Layer>
             {listItems}
             {hiddens}
             {listItemlabels}
           </Layer>
           <Layer>
-            {dates}
-          </Layer>
-          <Layer>
-            {rowLines}
             {segments}
           </Layer>
         </Stage>
