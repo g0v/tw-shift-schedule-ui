@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './App.css'
 import List from './List'
 import AddItem from './AddItem'
 import base from './rebase'
