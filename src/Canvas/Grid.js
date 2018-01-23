@@ -4,13 +4,13 @@ var React = require('react')
 
 class Grid extends React.Component {
   render () {
-    if (!this.props.shifts || this.props.shifts.length === 0) {
+    if (!this.props.shiftItems || this.props.shiftItems.length === 0) {
       return (
-        <div />
+        <Layer />
       )
     }
 
-    let shifts = this.props.shifts
+    let shifts = this.props.shiftItems
 
     // 顯示時間軸
     let times = []

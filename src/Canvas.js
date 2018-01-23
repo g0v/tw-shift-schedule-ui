@@ -3,6 +3,7 @@ import moment from 'moment'
 import shift from './tw-shift-schedule'
 import {Stage, Layer, Rect, Text, Line} from 'react-konva'
 import Grid from './Canvas/Grid'
+import Segments from './Canvas/Segments'
 
 var React = require('react')
 
@@ -47,7 +48,7 @@ class Canvas extends React.Component {
     return items
   }
 
-  shiftTokens () {
+  segments () {
     if (!this.props.shifts || this.props.shifts.length === 0) return []
 
     let shifts = []
@@ -65,7 +66,7 @@ class Canvas extends React.Component {
     // rawItems = 未加上隱藏工時的班表
     let rawItems = this.listItems(true)
     let {settings} = this.props
-    let tokens = this.shiftTokens()
+    let tokens = this.segments()
 
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
@@ -190,15 +191,13 @@ class Canvas extends React.Component {
     return (
       <div>
         <Stage width={820} height={height}>
-          <Grid shifts={items} />
+          <Grid shiftItems={items} />
           <Layer>
             {listItems}
             {hiddens}
             {listItemlabels}
           </Layer>
-          <Layer>
-            {segments}
-          </Layer>
+          <Segments shiftItems={items} rawShiftItems={rawItems} shifts={this.props.shifts} />
         </Stage>
         <div>
           圖例：
