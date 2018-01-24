@@ -1,9 +1,10 @@
 
 import moment from 'moment'
-import shift from './tw-shift-schedule'
-import {Stage, Layer, Rect, Text, Line} from 'react-konva'
+import {Stage, Layer, Rect, Text} from 'react-konva'
 import Grid from './Canvas/Grid'
 import Segments from './Canvas/Segments'
+
+import {isAcrossDay} from './timeutil'
 
 var React = require('react')
 
@@ -21,8 +22,8 @@ class Canvas extends React.Component {
         m.length += (settings.hiddenBefore + settings.hiddenAfter)
       }
 
-      // 如果跨日就切成兩個
-      if (m.start.day() !== m.end.day()) {
+      // 如果跨日就切成兩個, 剛好壓線的話不算
+      if (isAcrossDay(m.start, m.end)) {
         let s1 = m.start.clone()
         let e1 = m.start.clone().endOf('day')
         items.push({
@@ -48,64 +49,17 @@ class Canvas extends React.Component {
     return items
   }
 
-  segments () {
-    if (!this.props.shifts || this.props.shifts.length === 0) return []
-
-    let shifts = []
-    for (let item of this.props.shifts) {
-      shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
-    }
-
-    let tokens = shift.tokenizer(shift.Schedule.fromTime(shifts))
-    return tokens
-  }
-
   render () {
     // items = 加上隱藏工時後的班表
     let items = this.listItems()
     // rawItems = 未加上隱藏工時的班表
     let rawItems = this.listItems(true)
     let {settings} = this.props
-    let tokens = this.segments()
 
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
         <div />
       )
-    }
-
-    // 顯示依照法律切段的班表
-    let segments = []
-    let startTime = rawItems[0].start.clone()
-    // 如果 未加上隱藏工時 跟 加上隱藏工時候的班表起始日不同，代表隱藏工時讓班表跨日了，需要調整上班區間的顯示位置
-    let rowOffset = (rawItems[0].start.date() !== items[0].start.date() ? 1 : 0)
-    let segmentStartTime = startTime.clone()
-    for (let i = 0; i < tokens.length; i++) {
-      let token = tokens[i]
-
-      let row = segmentStartTime.date() - startTime.date() + rowOffset
-
-      let segLineStart = segmentStartTime.diff(segmentStartTime.clone().startOf('day'), 'minutes') / 2 + 100
-      if (token.type === 'work') {
-        segments.push(
-          <Line
-            key={`${segmentStartTime.format()}-${i}`}
-            points={[segLineStart, row * 50 + 70, segLineStart + token.value.length / 2, row * 50 + 70]}
-            stroke='blue'
-          />
-        )
-      }
-      if (token.type === 'invalid') {
-        segments.push(
-          <Line
-            key={`${segmentStartTime.format()}-${i}-`}
-            points={[segLineStart, row * 50 + 70, segLineStart + token.value.length / 2, row * 50 + 70]}
-            stroke='red'
-            strokeWidth={5}
-          />
-        )
-      }
-      segmentStartTime.add(token.value.length, 'minutes')
     }
 
     // 顯示班表
@@ -136,7 +90,7 @@ class Canvas extends React.Component {
         <Text key={item.start.format()}
           x={x}
           y={y}
-          text={`${Math.floor(item.length / 60)} 時 ${item.length % 60} 分`}
+          text={Math.floor(item.length / 60) > 0 ? `${Math.floor(item.length / 60)} 時 ${item.length % 60} 分` : `${item.length % 60} 分`}
           color='black' />
       )
     })

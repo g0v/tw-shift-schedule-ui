@@ -28,7 +28,7 @@ class List extends React.Component {
     let i = 0
 
     var listItems = this.listItems().map((item, index) => {
-      if (item.type !== 'work') return
+      if (item.type !== 'work') return ''
       i++
 
       return (
