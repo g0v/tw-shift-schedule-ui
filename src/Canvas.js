@@ -1,16 +1,18 @@
 
 import moment from 'moment'
-import {Stage, Layer, Rect, Text} from 'react-konva'
+import { Stage, Layer, Rect, Text } from 'react-konva'
 import Grid from './Canvas/Grid'
 import Segments from './Canvas/Segments'
 
-import {isAcrossDay} from './timeutil'
+import { isAcrossDay } from './timeutil'
+
+import consts from './const'
 
 var React = require('react')
 
 class Canvas extends React.Component {
   listItems (raw) {
-    let {settings} = this.props
+    let { settings } = this.props
     if (!this.props.shifts || this.props.shifts.length === 0) return []
     let items = []
     for (let item of this.props.shifts) {
@@ -49,12 +51,34 @@ class Canvas extends React.Component {
     return items
   }
 
+  resize () {
+    let canvasWrapWidth = document.querySelector('#canvas-wrap').offsetWidth
+    let scaleX = canvasWrapWidth / consts.canvasDefaultSize
+    if (scaleX !== this.state.scaleX) {
+      console.log(canvasWrapWidth, scaleX)
+      this.setState({ scaleX: scaleX })
+    }
+  }
+
+  componentWillMount () {
+    this.setState({
+      scaleX: 1
+    })
+  }
+
+  componentDidMount () {
+    this.resize()
+    console.log('did mount')
+
+    window.addEventListener('resize', this.resize.bind(this))
+  }
+
   render () {
     // items = 加上隱藏工時後的班表
     let items = this.listItems()
     // rawItems = 未加上隱藏工時的班表
     let rawItems = this.listItems(true)
-    let {settings} = this.props
+    let { settings } = this.props
 
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
@@ -142,9 +166,15 @@ class Canvas extends React.Component {
     let rowCount = (items[items.length - 1].start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') + 1)
     let height = rowCount * 50 + 20
 
+    setTimeout(() => {
+      this.props.onSetHeight(height)
+    }, 1)
+
+    console.log(this.state)
+
     return (
       <div>
-        <Stage width={820} height={height}>
+        <Stage width={consts.canvasDefaultSize} height={height} scaleX={this.state.scaleX}>
           <Grid shiftItems={items} />
           <Layer>
             {listItems}

@@ -1,4 +1,4 @@
-import {Layer, Text, Line} from 'react-konva'
+import { Layer, Text, Line } from 'react-konva'
 
 var React = require('react')
 
@@ -15,12 +15,23 @@ class Grid extends React.Component {
     // 顯示時間軸
     let times = []
     for (let i = 0; i < 24; i++) {
-      times.push(
-        <Text key={i}
-          text={`${i}`}
-          x={i * 30 + 100}
-          y={5} />
-      )
+      if (i % 6 !== 0) {
+        times.push(
+          <Text key={i}
+            text={`|`}
+            x={i * 30 + 100}
+            y={5} />
+        )
+      } else {
+        let label = `${i}`
+        let offset = (label.length / 2) * 6
+        times.push(
+          <Text key={i}
+            text={`${i}`}
+            x={i * 30 + 100 - offset}
+            y={5} />
+        )
+      }
     }
 
     let rowCount = (shifts[shifts.length - 1].start.clone().startOf('day').diff(shifts[0].start.clone().startOf('day'), 'day') + 1)
@@ -43,7 +54,7 @@ class Grid extends React.Component {
           key={i}
           points={[0, i * 50 + 70, 820, i * 50 + 70]}
           stroke='#eeeeee'
-          />
+        />
       )
     }
 
