@@ -28,7 +28,7 @@ class Alerts extends React.Component {
           if (c.type === 'warning') {
             return <Alert key={`${c.offset}-${c.msg}`} title={title[c.type]} text={c.msg} color='green' />
           } else {
-            return <Alert key={`${c.offset}-${c.msg}`} title={title[c.type]} text={c.msg} color='red' />
+            return <Alert key={`${c.offset}-${c.msg}`} title={title[c.type]} text={`${c.msg} (${c.time.format('YYYY-MM-DD HH:mm')})`} color='red' />
           }
         }
         )}
