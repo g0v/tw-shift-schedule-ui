@@ -52,16 +52,6 @@ class App extends Component {
     this.fetch()
   }
 
-  handleAddItem (newItem) {
-    let newShift = this.state.shifts.concat([newItem])
-    // sort by start time
-    newShift = newShift.sort((x, y) => { return momentFromItem(x).start - momentFromItem(y).start })
-    this.setState({
-      shifts: newShift,
-      empty: false
-    })
-  }
-
   async submit () {
     let newLocation = await base.push(`published`, { data: this.state.shifts })
     let publishID = newLocation.key
@@ -84,7 +74,6 @@ class App extends Component {
   }
 
   handleCanvasResize (size) {
-    console.log('handle', size)
     if (size !== this.state.canvasWrapSize) {
       this.setState({ canvasWrapSize: size })
     }
@@ -96,11 +85,22 @@ class App extends Component {
         checkInTime: moment()
       })
     } else {
+      let end = moment()
+      let newItem = {
+        endDate: end.format('YYYY-MM-DD'),
+        endTime: end.format('HH:mm'),
+        startDate: this.state.checkInTime.format('YYYY-MM-DD'),
+        startTime: this.state.checkInTime.format('HH:mm')
+      }
+      let newShift = this.state.shifts.concat([newItem])
+      // sort by start time
+      newShift = newShift.sort((x, y) => { return momentFromItem(x).start - momentFromItem(y).start })
+      this.setState({
+        shifts: newShift,
+        empty: false
+      })
       this.setState({ checkInTime: undefined })
     }
-  }
-
-  tick () {
   }
 
   render () {

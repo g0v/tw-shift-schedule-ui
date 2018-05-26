@@ -23,7 +23,6 @@ class Alerts extends React.Component {
     let errorsAndWarnings = shift.validate(schedule)
     return (
       <div className='tc w-80 center pa4 bg-dark-red br3 white-90 f4'>
-        {overworkCauses.map(c => <Alert key={c} title='過勞' text={c} color='orange' />)}
         {errorsAndWarnings.map(c => {
           if (c.type === 'warning') {
             return <Alert key={`${c.offset}-${c.msg}`} title={title[c.type]} text={c.msg} color='green' />
@@ -32,6 +31,7 @@ class Alerts extends React.Component {
           }
         }
         )}
+        {overworkCauses.map(c => <Alert key={c} title='過勞' text={c} color='orange' />)}
       </div>
     )
   }

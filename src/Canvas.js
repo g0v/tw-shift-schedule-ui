@@ -55,7 +55,6 @@ class Canvas extends React.Component {
     let canvasWrapWidth = document.querySelector('#canvas-wrap').offsetWidth
     let scaleX = canvasWrapWidth / consts.canvasDefaultSize
     if (scaleX !== this.state.scaleX) {
-      console.log(canvasWrapWidth, scaleX)
       this.setState({ scaleX: scaleX })
     }
   }
@@ -68,7 +67,6 @@ class Canvas extends React.Component {
 
   componentDidMount () {
     this.resize()
-    console.log('did mount')
 
     window.addEventListener('resize', this.resize.bind(this))
   }
@@ -77,7 +75,6 @@ class Canvas extends React.Component {
     // items = 加上隱藏工時後的班表
     let items = this.listItems()
     // rawItems = 未加上隱藏工時的班表
-    let rawItems = this.listItems(true)
     let { settings } = this.props
 
     if (!this.props.shifts || this.props.shifts.length === 0) {
@@ -170,8 +167,6 @@ class Canvas extends React.Component {
       this.props.onSetHeight(height)
     }, 1)
 
-    console.log(this.state)
-
     return (
       <div>
         <Stage width={consts.canvasDefaultSize} height={height} scaleX={this.state.scaleX}>
@@ -182,15 +177,6 @@ class Canvas extends React.Component {
             {listItemlabels}
           </Layer>
         </Stage>
-        <div>
-          圖例：
-          <ul>
-            <li>灰色方塊：記載的工時</li>
-            <li>粉紅方塊：隱藏工時</li>
-            <li>藍色底線：依照勞基法分出來的工作時段（包含中間休息）</li>
-            <li>紅色底線：無法合法切出工作時段</li>
-          </ul>
-        </div>
       </div>
     )
   }
