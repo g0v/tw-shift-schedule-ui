@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import List from './List'
-import AddItem from './AddItem'
 import base from './rebase'
-import Overwork from './Overwork'
+import Alerts from './alerts'
 import moment from 'moment'
 import Canvas from './Canvas'
 import Setting from './Setting'
@@ -143,12 +142,8 @@ class App extends Component {
               </div>
             </div>
           </div>
-          <div className='box p-8'>
-            {this.state.edit ? <AddItem
-              onAdd={this.handleAddItem.bind(this)}
-              onSubmit={this.handleSubmit.bind(this)}
-            /> : ''}
-            <Overwork settings={this.state.settings} shifts={this.state.shifts} />
+          <div className='box p-8 hidden sm:block'>
+            <Alerts settings={this.state.settings} shifts={this.state.shifts} />
             <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
             <div className='flex mb-4' ref={this.setCanvasWrapRef} style={{ height: this.state.canvasWrapSize }}>
               <div className='w-3/4 bg-grey h-12' id='canvas-wrap'>

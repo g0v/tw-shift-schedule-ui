@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { Stage, Layer, Rect, Text } from 'react-konva'
 import Grid from './Canvas/Grid'
-import Segments from './Canvas/Segments'
+// import Segments from './Canvas/Segments'
 
 import { isAcrossDay } from './timeutil'
 
@@ -102,7 +102,7 @@ class Canvas extends React.Component {
           onMouseLeave={() => {
             document.body.style.cursor = 'default'
           }}
-          fill='#dddddd' />
+          fill='#d9f0d9' />
       )
     })
 
@@ -139,7 +139,7 @@ class Canvas extends React.Component {
               onMouseLeave={() => {
                 document.body.style.cursor = 'default'
               }}
-              fill='#ffb2bc' />
+              fill='#fde49e' />
           )
           j++
         }
@@ -156,7 +156,7 @@ class Canvas extends React.Component {
               onMouseLeave={() => {
                 document.body.style.cursor = 'default'
               }}
-              fill='#ffb2bc' />
+              fill='#fde49e' />
           )
           j++
         }
@@ -181,7 +181,6 @@ class Canvas extends React.Component {
             {hiddens}
             {listItemlabels}
           </Layer>
-          <Segments shiftItems={items} rawShiftItems={rawItems} shifts={this.props.shifts} />
         </Stage>
         <div>
           圖例：

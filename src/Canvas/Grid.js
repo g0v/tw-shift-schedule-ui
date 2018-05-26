@@ -53,7 +53,8 @@ class Grid extends React.Component {
         <Line
           key={i}
           points={[0, i * 50 + 70, 820, i * 50 + 70]}
-          stroke='#eeeeee'
+          stroke='#dddddd'
+          opacity={0.5}
         />
       )
     }

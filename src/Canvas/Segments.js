@@ -1,5 +1,5 @@
 
-import shift from '../tw-shift-schedule'
+import shift from 'tw-shift-schedule'
 import { Layer, Line } from 'react-konva'
 import { isAcrossDay } from '../timeutil'
 
