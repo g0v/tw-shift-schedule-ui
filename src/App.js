@@ -5,6 +5,7 @@ import Alerts from './alerts'
 import moment from 'moment'
 import Canvas from './Canvas'
 import Setting from './Setting'
+import Header from './header'
 
 import consts from './const'
 
@@ -106,30 +107,7 @@ class App extends Component {
   render () {
     return (
       <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8'>
-        <div className='w-full bg-white border-t-2 border-red'>
-          <div className='max-w-2xl m-auto p-3'>
-            <div className='flex justify-between w-full'>
-              <div>
-                <div className='border-r pr-4 border-grey inline-block'>
-                  勞工小幫手首頁
-                </div>
-                <div className='pl-4 inline-block'>
-                  工時檢測
-                </div>
-                <div className='pl-4 inline-block'>
-                  產生班表
-                </div>
-                <div className='pl-4 inline-block'>
-                  函釋追蹤
-                </div>
-                <div className='pl-4 inline-block' />
-              </div>
-              <div>
-                Powered by g0v
-              </div>
-            </div>
-          </div>
-        </div>
+        <Header />
         <div className='tc max-w-2xl m-auto p-3'>
           <div className='py-8 flex justify-between'>
             <h1 className='f-6 text-black'>勞工小幫手</h1>
