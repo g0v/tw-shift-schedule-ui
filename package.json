@@ -12,7 +12,7 @@
     "react-dom": "^16.2.0",
     "react-konva": "^1.6.5",
     "react-scripts": "1.1.0",
-    "tw-shift-schedule": "^2.1.0"
+    "tw-shift-schedule": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
