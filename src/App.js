@@ -105,11 +105,11 @@ class App extends Component {
       let [start, end] = d
       if (!validateImport(start)) {
         window.alert(`格式錯誤：${start}，應為 YYYY-MM-DD HH:mm `)
-        break
+        return
       }
       if (!validateImport(end)) {
         window.alert(`格式錯誤：${end}，應為 YYYY-MM-DD HH:mm `)
-        break
+        return
       }
       let [startDate, startTime] = start.split(' ')
       let [endDate, endTime] = end.split(' ')
