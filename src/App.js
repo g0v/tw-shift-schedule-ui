@@ -16,9 +16,7 @@ class App extends Component {
       shifts: [],
       publishID: undefined,
       loading: true,
-      edit: true,
       settings: { hiddenBefore: 0, hiddenAfter: 0 },
-      empty: true,
       checkInTime: undefined,
       canvasWrapSize: 0
     })
@@ -33,14 +31,12 @@ class App extends Component {
     if (path) {
       // load from published shifts
       publishID = path[1]
-      this.setState({ edit: false })
       let data = await base.fetch(`published/${publishID}`, { context: this, asArray: true })
       let settings = await base.fetch(`metadata/${publishID}`, { context: this })
       this.setState({
         publishID: publishID,
         shifts: data,
         loading: false,
-        empty: false,
         settings
       })
     } else {
@@ -138,8 +134,7 @@ class App extends Component {
     // sort by start time
     newShift = newShift.sort((x, y) => { return momentFromItem(x).start - momentFromItem(y).start })
     this.setState({
-      shifts: newShift,
-      empty: false
+      shifts: newShift
     })
   }
 
@@ -162,28 +157,36 @@ class App extends Component {
           </div>
           <div className='box p-8 hidden sm:block min-h-screen'>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
-            <div className='flex mb-4' ref={this.setCanvasWrapRef} style={{ height: this.state.canvasWrapSize }}>
-              <div className='w-3/4 h-12 border-r border-grey' id='canvas-wrap'>
-                {this.state.edit ? <button onClick={this.handleSubmit.bind(this)}>儲存並發佈</button> : ''}
-                {this.state.loading === true
-                  ? <h3> LOADING... </h3>
-                  : <div className='center' style={{ width: consts.canvasDefaultSize }}>
-                    <Canvas
-                      settings={this.state.settings}
-                      shifts={this.state.shifts}
-                      onDelete={this.handleDelete.bind(this)}
-                      onSetHeight={this.handleCanvasResize.bind(this)} />
-                  </div>}
-              </div>
-              <div className='w-1/4 h-12 ml-8' >
-                <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
-              </div>
-            </div>
+            {this.renderBody()}
           </div>
         </div >
       </div >
 
     )
+  }
+
+  renderBody () {
+    if (this.state.loading) {
+      return <div className='text-center'> 載入中... </div>
+    }
+
+    if (this.state.shifts.length === 0) {
+      return <div className='text-center'> 還沒有輸入資料喔 </div>
+    }
+    return <div className='flex mb-4' ref={this.setCanvasWrapRef} style={{ height: this.state.canvasWrapSize }}>
+      <div className='w-3/4 h-12 border-r border-grey' id='canvas-wrap'>
+        <div className='center' style={{ width: consts.canvasDefaultSize }}>
+          <Canvas
+            settings={this.state.settings}
+            shifts={this.state.shifts}
+            onDelete={this.handleDelete.bind(this)}
+            onSetHeight={this.handleCanvasResize.bind(this)} />
+        </div>
+      </div>
+      <div className='w-1/4 h-12 ml-8' >
+        <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
+      </div>
+    </div>
   }
 }
 
