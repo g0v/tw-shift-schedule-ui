@@ -12,24 +12,26 @@ class Setting extends React.Component {
   render () {
     return (
       <div className='center br3 w-80 pa3 tc bg-black-10'>
-        <h4>設定</h4>
-        <span className='dib'>隱藏工時-前（分鐘）：</span>
+        <h4>隱藏工時設定</h4>
+        <span>前（分鐘）：</span>
         <input
           type='number'
           ref='hiddenBefore'
           placeholder='0'
+          style={{ width: '60px' }}
+          className='border border-grey text-right'
           value={this.props.settings.hiddenBefore}
-          onChange={this.handleChange.bind(this)}
-          className={`dib ba ma1 pa1`} />
+          onChange={this.handleChange.bind(this)} />
         <br />
-        <span className='dib'>隱藏工時-後（分鐘）：</span>
+        <span>後（分鐘）：</span>
         <input
           type='number'
           ref='hiddenAfter'
           placeholder='0'
+          style={{ width: '60px' }}
+          className='border border-grey text-right'
           value={this.props.settings.hiddenAfter}
-          onChange={this.handleChange.bind(this)}
-          className={`ba pa1 ma1`} />
+          onChange={this.handleChange.bind(this)} />
       </div>
     )
   }

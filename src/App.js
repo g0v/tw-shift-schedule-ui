@@ -163,7 +163,7 @@ class App extends Component {
           <div className='box p-8 hidden sm:block min-h-screen'>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
             <div className='flex mb-4' ref={this.setCanvasWrapRef} style={{ height: this.state.canvasWrapSize }}>
-              <div className='w-3/4 bg-grey h-12' id='canvas-wrap'>
+              <div className='w-3/4 h-12 border-r border-grey' id='canvas-wrap'>
                 {this.state.edit ? <button onClick={this.handleSubmit.bind(this)}>儲存並發佈</button> : ''}
                 {this.state.loading === true
                   ? <h3> LOADING... </h3>
@@ -175,7 +175,7 @@ class App extends Component {
                       onSetHeight={this.handleCanvasResize.bind(this)} />
                   </div>}
               </div>
-              <div className='w-1/4 bg-grey-light h-12' >
+              <div className='w-1/4 h-12 ml-8' >
                 <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
               </div>
             </div>
