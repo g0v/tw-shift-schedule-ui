@@ -22,7 +22,7 @@ class Alerts extends React.Component {
 
     let errorsAndWarnings = shift.validate(schedule)
     return (
-      <div className='tc w-80 center pa4 bg-dark-red br3 white-90 f4'>
+      <div className='mb-8'>
         {errorsAndWarnings.map(c => {
           if (c.type === 'warning') {
             return <Alert key={`${c.offset}-${c.msg}`} title={title[c.type]} text={c.msg} color='green' />

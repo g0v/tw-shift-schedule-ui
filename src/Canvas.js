@@ -1,10 +1,8 @@
 
-import moment from 'moment'
 import { Stage, Layer, Rect, Text } from 'react-konva'
 import Grid from './Canvas/Grid'
+import { momentFromItem, isAcrossDay } from './timeutil'
 // import Segments from './Canvas/Segments'
-
-import { isAcrossDay } from './timeutil'
 
 import consts from './const'
 
@@ -183,12 +181,3 @@ class Canvas extends React.Component {
 };
 
 export default Canvas
-
-function momentFromItem (item) {
-  let start = moment(`${item.startDate} ${item.startTime}:00`)
-  let end = moment(`${item.endDate} ${item.endTime}:00`)
-  let length = end.diff(start, 'minutes')
-  return {
-    start, end, length
-  }
-}

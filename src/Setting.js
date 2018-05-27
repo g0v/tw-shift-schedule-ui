@@ -6,7 +6,7 @@ class Setting extends React.Component {
   handleChange (e) {
     let hiddenBefore = ReactDOM.findDOMNode(this.refs.hiddenBefore).value
     let hiddenAfter = ReactDOM.findDOMNode(this.refs.hiddenAfter).value
-    this.props.onUpdate({hiddenBefore: +hiddenBefore, hiddenAfter: +hiddenAfter})
+    this.props.onUpdate({ hiddenBefore: +hiddenBefore, hiddenAfter: +hiddenAfter })
   }
 
   render () {
@@ -21,6 +21,7 @@ class Setting extends React.Component {
           value={this.props.settings.hiddenBefore}
           onChange={this.handleChange.bind(this)}
           className={`dib ba ma1 pa1`} />
+        <br />
         <span className='dib'>隱藏工時-後（分鐘）：</span>
         <input
           type='number'

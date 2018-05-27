@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import List from './List'
 import base from './rebase'
 import Alerts from './alerts'
 import moment from 'moment'
 import Canvas from './Canvas'
 import Setting from './Setting'
+import CSVUpload from './CSVUpload'
 import Header from './header'
+import { momentFromItem } from './timeutil'
 
 import consts from './const'
 
@@ -87,42 +88,80 @@ class App extends Component {
       })
     } else {
       let end = moment()
-      let newItem = {
-        endDate: end.format('YYYY-MM-DD'),
-        endTime: end.format('HH:mm'),
-        startDate: this.state.checkInTime.format('YYYY-MM-DD'),
-        startTime: this.state.checkInTime.format('HH:mm')
+      if (end.diff(this.state.checkInTime, 'minutes') === 0) {
+        window.alert('無法紀錄小於一分鐘的工時')
+      } else {
+        let start = this.state.checkInTime
+        this.addItem(start.format('YYYY-MM-DD'), start.format('HH:mm'), end.format('YYYY-MM-DD'), end.format('HH:mm'))
       }
-      let newShift = this.state.shifts.concat([newItem])
-      // sort by start time
-      newShift = newShift.sort((x, y) => { return momentFromItem(x).start - momentFromItem(y).start })
-      this.setState({
-        shifts: newShift,
-        empty: false
-      })
       this.setState({ checkInTime: undefined })
     }
+  }
+
+  handleCSVUpload (text) {
+    let data = text.split('\n').map(r => r.split(','))
+    let newShifts = []
+    for (let d of data) {
+      let [start, end] = d
+      if (!validateImport(start)) {
+        window.alert(`格式錯誤：${start}，應為 YYYY-MM-DD HH:mm `)
+        break
+      }
+      if (!validateImport(end)) {
+        window.alert(`格式錯誤：${end}，應為 YYYY-MM-DD HH:mm `)
+        break
+      }
+      let [startDate, startTime] = start.split(' ')
+      let [endDate, endTime] = end.split(' ')
+      newShifts.push({ startDate, startTime, endDate, endTime })
+    }
+
+    if (this.state.shifts.length > 0) {
+      if (!window.confirm('將會覆蓋現有資料，確定？')) {
+        return
+      }
+    }
+
+    console.log(newShifts)
+
+    this.setState({ shifts: newShifts })
+  }
+
+  addItem (startDate, startTime, endDate, endTime) {
+    let newItem = {
+      endDate,
+      endTime,
+      startDate,
+      startTime
+    }
+    let newShift = this.state.shifts.concat([newItem])
+    // sort by start time
+    newShift = newShift.sort((x, y) => { return momentFromItem(x).start - momentFromItem(y).start })
+    this.setState({
+      shifts: newShift,
+      empty: false
+    })
   }
 
   render () {
     return (
       <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8'>
         <Header />
-        <div className='tc max-w-2xl m-auto p-3'>
+        <div className='max-w-2xl m-auto p-3'>
           <div className='py-8 flex justify-between'>
-            <h1 className='f-6 text-black'>勞工小幫手</h1>
+            <h1 className='f-6 text-black'>記錄工時</h1>
             <div className='flex'>
-              <div className='nav-btn' onClick={this.checkIn.bind(this)}>
+              <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>
                 <span>
-                  <i className='fas fa-cog' />&nbsp;
+                  <i className='fas fa-clipboard-check' />&nbsp;
                   {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
                 </span>
               </div>
+              <CSVUpload callback={this.handleCSVUpload.bind(this)} />
             </div>
           </div>
-          <div className='box p-8 hidden sm:block'>
+          <div className='box p-8 hidden sm:block min-h-screen'>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
-            <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
             <div className='flex mb-4' ref={this.setCanvasWrapRef} style={{ height: this.state.canvasWrapSize }}>
               <div className='w-3/4 bg-grey h-12' id='canvas-wrap'>
                 {this.state.edit ? <button onClick={this.handleSubmit.bind(this)}>儲存並發佈</button> : ''}
@@ -134,15 +173,11 @@ class App extends Component {
                       shifts={this.state.shifts}
                       onDelete={this.handleDelete.bind(this)}
                       onSetHeight={this.handleCanvasResize.bind(this)} />
-                    <List
-                      settings={this.state.settings}
-                      shifts={this.state.shifts}
-                      onDelete={this.handleDelete.bind(this)}
-                      edit={this.state.edit}
-                    />
                   </div>}
               </div>
-              <div className='w-1/4 bg-grey-light h-12' />
+              <div className='w-1/4 bg-grey-light h-12' >
+                <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
+              </div>
             </div>
           </div>
         </div >
@@ -154,11 +189,10 @@ class App extends Component {
 
 export default App
 
-function momentFromItem (item) {
-  let start = moment(`${item.startDate} ${item.startTime}:00`)
-  let end = moment(`${item.endDate} ${item.endTime}:00`)
-  let length = end.diff(start) / 1000 / 60
-  return {
-    start, end, length
+function validateImport (cell) {
+  if (!cell.match(/\d\d\d\d-\d\d-\d\d \d\d:\d\d/)) {
+    return false
   }
+
+  return true
 }
