@@ -16,7 +16,7 @@ class App extends Component {
       shifts: [],
       publishID: undefined,
       loading: true,
-      settings: { hiddenBefore: 0, hiddenAfter: 0 },
+      settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none' },
       checkInTime: undefined,
       canvasWrapSize: 0
     })
@@ -67,8 +67,12 @@ class App extends Component {
     this.setState({ shifts: newShifts })
   }
 
-  handleSettingUpdate (settings) {
-    this.setState({ settings: settings })
+  handleHiddenUpdate (settings) {
+    this.setState({ settings: Object.assign(this.state.settings, settings) })
+  }
+
+  handleTransformUpdate (settings) {
+    this.setState({ settings: Object.assign(this.state.settings, settings) })
   }
 
   handleCanvasResize (size) {
@@ -184,7 +188,10 @@ class App extends Component {
         </div>
       </div>
       <div className='w-1/4 h-12 ml-8' >
-        <Setting onUpdate={this.handleSettingUpdate.bind(this)} settings={this.state.settings} />
+        <Setting
+          onHiddenUpdate={this.handleHiddenUpdate.bind(this)}
+          onTransformUpdate={this.handleTransformUpdate.bind(this)}
+          settings={this.state.settings} />
       </div>
     </div>
   }

@@ -3,10 +3,23 @@ import ReactDOM from 'react-dom'
 var React = require('react')
 
 class Setting extends React.Component {
-  handleChange (e) {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      selectedTransform: 'none'
+    }
+  }
+
+  handleHiddenHourChange (e) {
     let hiddenBefore = ReactDOM.findDOMNode(this.refs.hiddenBefore).value
     let hiddenAfter = ReactDOM.findDOMNode(this.refs.hiddenAfter).value
     this.props.onUpdate({ hiddenBefore: +hiddenBefore, hiddenAfter: +hiddenAfter })
+  }
+
+  handleTransformChange (e) {
+    this.setState({ selectedTransform: e.target.value })
+    this.props.onTransformUpdate({ selectedTransform: e.target.value })
   }
 
   render () {
@@ -21,7 +34,7 @@ class Setting extends React.Component {
           style={{ width: '60px' }}
           className='border border-grey text-right'
           value={this.props.settings.hiddenBefore}
-          onChange={this.handleChange.bind(this)} />
+          onChange={this.handleHiddenHourChange.bind(this)} />
         <br />
         <span>後（分鐘）：</span>
         <input
@@ -31,7 +44,14 @@ class Setting extends React.Component {
           style={{ width: '60px' }}
           className='border border-grey text-right'
           value={this.props.settings.hiddenAfter}
-          onChange={this.handleChange.bind(this)} />
+          onChange={this.handleHiddenHourChange.bind(this)} />
+        <h4>彈性工時設定</h4>
+        <select value={this.state.selectedTransform} onChange={this.handleTransformChange.bind(this)}>
+          <option value='none'>非彈性工時</option>
+          <option value='two_week'>雙週彈性工時</option>
+          <option value='four_week'>四週彈性工時</option>
+          <option value='eight_week'>八週彈性工時</option>
+        </select>
       </div>
     )
   }

@@ -20,7 +20,25 @@ class Alerts extends React.Component {
     let schedule = shift.Schedule.fromTime(shifts)
     let overworkCauses = shift.overwork.check(schedule)
 
-    let errorsAndWarnings = shift.validate(schedule)
+    let errorsAndWarnings = []
+    console.log(this.props.settings)
+    switch (this.props.settings.selectedTransform) {
+      case undefined:
+        errorsAndWarnings = shift.validate(schedule)
+        break
+      case 'none':
+        errorsAndWarnings = shift.validate(schedule)
+        break
+      case 'two_week':
+        errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.two_week })
+        break
+      case 'four_week':
+        errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.four_week })
+        break
+      case 'eight_week':
+        errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.eight_week })
+        break
+    }
     return (
       <div className='mb-8'>
         {errorsAndWarnings.map(c => {
