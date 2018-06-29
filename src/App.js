@@ -5,20 +5,24 @@ import moment from 'moment'
 import Canvas from './Canvas'
 import Setting from './Setting'
 import CSVUpload from './CSVUpload'
-import Header from './header'
+import Header from './Header'
 import { momentFromItem } from './timeutil'
+import firebase from 'firebase'
 
 import consts from './const'
 
 class App extends Component {
   componentWillMount () {
+    let checkInTime = window.localStorage.getItem('checkInTime')
+    if (checkInTime) checkInTime = moment(checkInTime)
     this.setState({
       shifts: [],
       publishID: undefined,
       loading: true,
       settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none' },
-      checkInTime: undefined,
-      canvasWrapSize: 0
+      checkInTime: checkInTime,
+      canvasWrapSize: 0,
+      user: undefined
     })
     this.setCanvasWrapRef = ele => {
       this.canvasWrap = ele
@@ -31,13 +35,15 @@ class App extends Component {
     if (path) {
       // load from published shifts
       publishID = path[1]
-      let data = await base.fetch(`published/${publishID}`, { context: this, asArray: true })
-      let settings = await base.fetch(`metadata/${publishID}`, { context: this })
+      let data = await base.fetch(`published/${publishID}`, { context: this })
+      console.log(data)
       this.setState({
         publishID: publishID,
-        shifts: data,
+        shifts: data.shifts,
         loading: false,
-        settings
+        submitState: 'done',
+        publisherID: data.userId,
+        settings: data.metadata
       })
     } else {
       this.setState({
@@ -51,14 +57,30 @@ class App extends Component {
   }
 
   async submit () {
-    let newLocation = await base.push(`published`, { data: this.state.shifts })
+    this.setState({submitState: 'submitting'})
+    let newLocation = await base.push('published', {
+      data: {
+        shifts: this.state.shifts,
+        metadata: this.state.settings,
+        userId: this.state.user.uid
+      }
+    })
     let publishID = newLocation.key
-    await base.post(`metadata/${publishID}`, { data: this.state.settings })
+    this.setState({submitState: 'done', publishID: publishID})
     window.history.pushState({ publish: publishID }, 'published', publishID)
   }
 
   handleSubmit (e) {
     this.submit()
+  }
+
+  handleUnpublish (e) {
+    this.unpublish()
+  }
+
+  async unpublish () {
+    await base.remove(`published/${this.state.publishID}`)
+    window.location.href = '/'
   }
 
   handleDelete (i) {
@@ -81,11 +103,32 @@ class App extends Component {
     }
   }
 
+  handleLogin () {
+    var provider = new firebase.auth.FacebookAuthProvider()
+    firebase.auth().signInWithPopup(provider).then((result) => {
+    // var token = result.credential.accessToken
+      var user = result.user
+      this.setState({user})
+    }).catch((error) => {
+      var errorCode = error.code
+      var errorMessage = error.message
+      var email = error.email
+      var credential = error.credential
+      console.error(errorCode, errorMessage, email, credential)
+    })
+  }
+
+  handleLogout () {
+    firebase.auth().signOut().then(() => {
+      this.setState({user: undefined})
+    })
+  }
+
   checkIn () {
     if (!this.state.checkInTime) {
-      this.setState({
-        checkInTime: moment()
-      })
+      let checkInTime = moment()
+      this.setState({checkInTime})
+      window.localStorage.setItem('checkInTime', checkInTime.format())
     } else {
       let end = moment()
       if (end.diff(this.state.checkInTime, 'minutes') === 0) {
@@ -93,8 +136,9 @@ class App extends Component {
       } else {
         let start = this.state.checkInTime
         this.addItem(start.format('YYYY-MM-DD'), start.format('HH:mm'), end.format('YYYY-MM-DD'), end.format('HH:mm'))
+        window.localStorage.removeItem('checkInTime')
+        this.setState({ checkInTime: undefined })
       }
-      this.setState({ checkInTime: undefined })
     }
   }
 
@@ -143,9 +187,20 @@ class App extends Component {
   }
 
   render () {
+    let deletable = false
+    if (this.state.user) {
+      deletable = this.state.user.uid === this.state.publisherID
+    }
     return (
       <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8'>
-        <Header />
+        <Header
+          login={this.handleLogin.bind(this)}
+          user={this.state.user}
+          logout={this.handleLogout.bind(this)}
+          submit={this.handleSubmit.bind(this)}
+          submitState={this.state.submitState}
+          unpublish={this.handleUnpublish.bind(this)}
+          deletable={deletable} />
         <div className='max-w-2xl m-auto p-3'>
           <div className='py-8 flex justify-between'>
             <h1 className='f-6 text-black'>記錄工時</h1>
@@ -163,8 +218,11 @@ class App extends Component {
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
             {this.renderBody()}
           </div>
-        </div >
-      </div >
+        </div>
+        <div className='mt-4 text-center'>
+          Powered by g0v
+        </div>
+      </div>
 
     )
   }

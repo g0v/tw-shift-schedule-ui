@@ -1,3 +1,4 @@
+/* global FileReader */
 var React = require('react')
 
 class CSVUpload extends React.Component {
@@ -11,7 +12,7 @@ class CSVUpload extends React.Component {
       <div className='relative overflow-hidden inline-block'>
         <div className='nav-btn ml-2 h-full bg-green text-white'>
           <span>
-            {this.state.loading ? <i className='fas fa-spinner' /> : <i className='fas fa-upload' />}
+            {this.state.loading ? <i className='fas fa-spinner' /> : <i className='fas fa-file-import' />}
             &nbsp;
             {this.state.loading ? '載入中' : '批次匯入'}
           </span>

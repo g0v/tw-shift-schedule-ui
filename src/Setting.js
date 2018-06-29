@@ -45,15 +45,33 @@ class Setting extends React.Component {
           className='border border-grey text-right'
           value={this.props.settings.hiddenAfter}
           onChange={this.handleHiddenHourChange.bind(this)} />
-        <h4>彈性工時設定</h4>
+        <h4 className='mt-3'>彈性工時設定</h4>
         <select value={this.state.selectedTransform} onChange={this.handleTransformChange.bind(this)}>
           <option value='none'>非彈性工時</option>
           <option value='two_week'>雙週彈性工時</option>
           <option value='four_week'>四週彈性工時</option>
           <option value='eight_week'>八週彈性工時</option>
         </select>
+        {this.renderEligible()}
       </div>
     )
+  }
+
+  // https://www.mol.gov.tw/topic/3067/14530/36712/
+  renderEligible () {
+    if (this.state.selectedTransform === 'four_week') {
+      return <div className='mt-2'>
+        <h5>適用行業</h5>
+        <span>餐飲、銀行、加油站等服務業</span>
+        <span><a href='https://www.mol.gov.tw/topic/3067/14530/36712/'>完整列表請按此</a></span>
+      </div>
+    } else if (this.state.selectedTransform === 'eight_week') {
+      return <div className='mt-2'>
+        <h5>適用行業</h5>
+        <span>製造業、營造業、客運業、批發零售業等</span>
+        <span><a href='https://www.mol.gov.tw/topic/3067/14530/36712/'>完整列表請按此</a></span>
+      </div>
+    }
   }
 }
 

@@ -1,21 +1,10 @@
 {
   "rules": {
     ".read": true,
-    ".write": false,
-    "workspaces": {
-			".read":  true,
-      ".write": true
-    },
     "published": {
       "$id": {
       	".read": true,
-      	".write": "!data.exists()"
-      }
-    },
-    "metadata": {
-      "$id": {
-        ".read": true,
-        ".write": "!data.exists()"
+        ".write": "!data.exists() || (data.child('userId').val() === auth.uid)"
       }
     }
   }
