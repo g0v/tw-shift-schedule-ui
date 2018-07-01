@@ -22,7 +22,8 @@ class App extends Component {
       settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none' },
       checkInTime: checkInTime,
       canvasWrapSize: 0,
-      user: undefined
+      user: undefined,
+      write: false
     })
     this.setCanvasWrapRef = ele => {
       this.canvasWrap = ele
@@ -53,7 +54,7 @@ class App extends Component {
   }
 
   componentDidMount () {
-    this.fetch()
+    this.load()
   }
 
   async submit () {
@@ -101,6 +102,42 @@ class App extends Component {
     if (size !== this.state.canvasWrapSize) {
       this.setState({ canvasWrapSize: size })
     }
+  }
+
+  save () {
+    if (this.state.submitState === 'done') {
+      this.submit()
+    } else {
+      window.localStorage.setItem('data', JSON.stringify(this.state.shifts))
+    }
+  }
+
+  async load () {
+    let path = window.location.pathname.match(/^\/(.+)/)
+    let publishID
+    if (path) {
+      // load from published shifts
+      publishID = path[1]
+      let data = await base.fetch(`published/${publishID}`, { context: this })
+      console.log(data)
+      this.setState({
+        publishID: publishID,
+        shifts: data.shifts,
+        loading: false,
+        submitState: 'done',
+        publisherID: data.userId,
+        settings: data.metadata
+      })
+    } else {
+      let shifts = JSON.parse(window.localStorage.getItem('data', this.state.shifts))
+      if (!shifts) shifts = []
+      console.log('loaded from localStorage', shifts)
+      this.setState({
+        loading: false,
+        shifts
+      })
+    }
+    this.updatePermission()
   }
 
   handleLogin () {
@@ -168,7 +205,9 @@ class App extends Component {
 
     console.log(newShifts)
 
-    this.setState({ shifts: newShifts })
+    this.setState({ shifts: newShifts }, () => {
+      this.save()
+    })
   }
 
   addItem (startDate, startTime, endDate, endTime) {
@@ -183,16 +222,31 @@ class App extends Component {
     newShift = newShift.sort((x, y) => { return momentFromItem(x).start - momentFromItem(y).start })
     this.setState({
       shifts: newShift
+    }, () => {
+      this.save()
     })
   }
 
-  render () {
+  updatePermission () {
     let deletable = false
     if (this.state.user) {
       deletable = this.state.user.uid === this.state.publisherID
     }
+    let writable = false
+    if (!this.state.publishID) {
+      writable = true
+    } else {
+      if (this.state.user && this.state.user.uid === this.state.publisherID) {
+        writable = true
+      }
+    }
+
+    this.setState({deletable, writable})
+  }
+
+  render () {
     return (
-      <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8'>
+      <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8 min-h-screen'>
         <Header
           login={this.handleLogin.bind(this)}
           user={this.state.user}
@@ -200,11 +254,12 @@ class App extends Component {
           submit={this.handleSubmit.bind(this)}
           submitState={this.state.submitState}
           unpublish={this.handleUnpublish.bind(this)}
-          deletable={deletable} />
-        <div className='max-w-2xl m-auto p-3'>
+          deletable={this.state.deletable} />
+        <div className='max-w-2xl m-auto p-3 flex sm:block justify-between flex-col' style={{minHeight: '85vh'}}>
           <div className='py-8 flex justify-between'>
             <h1 className='f-6 text-black'>記錄工時</h1>
-            <div className='flex'>
+            { !this.state.writable ? <div />
+            : <div className='hidden sm:flex'>
               <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>
                 <span>
                   <i className='fas fa-clipboard-check' />&nbsp;
@@ -213,11 +268,22 @@ class App extends Component {
               </div>
               <CSVUpload callback={this.handleCSVUpload.bind(this)} />
             </div>
+            }
           </div>
-          <div className='box p-8 hidden sm:block min-h-screen'>
+          <div className='box p-8 hidden sm:block'>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
             {this.renderBody()}
           </div>
+          { !this.state.writable ? <div />
+          : <div className='block sm:hidden'>
+            <div className='nav-btn ml-2 bg-blue text-white py-8' onClick={this.checkIn.bind(this)}>
+              <span className='block mx-auto'>
+                <i className='fas fa-clipboard-check' />&nbsp;
+                {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
+              </span>
+            </div>
+          </div>
+          }
         </div>
         <div className='mt-4 text-center'>
           Powered by g0v

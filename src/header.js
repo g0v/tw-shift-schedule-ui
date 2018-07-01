@@ -7,24 +7,24 @@ class Header extends React.Component {
         <div className='flex justify-between w-full'>
           <div>
             <div className='border-r pr-4 border-grey inline-block'>
-              勞工小幫手首頁
+              勞工小幫手
             </div>
-            <div className='pl-4 inline-block'>
-              記錄工時
-            </div>
-            <div className='pl-4 inline-block'>
-              產生班表
-            </div>
-            <div className='pl-4 inline-block'>
-              追蹤法令
-            </div>
+            <div className='pl-4 hidden sm:inline-block'>
+                記錄工時
+              </div>
+            <div className='pl-4 hidden sm:inline-block'>
+                產生班表
+              </div>
+            <div className='pl-4 hidden sm:inline-block'>
+                追蹤法令
+              </div>
           </div>
           <div>
             { this.props.user
             ? <div>
               {this.submitBtn()}
               <div className='pl-4 inline-block cursor-pointer' onClick={this.props.logout}>
-                {this.props.user.displayName} 登出
+                登出
                 </div>
             </div>
             : <div className='pl-4 inline-block cursor-pointer' onClick={this.props.login}>
