@@ -68,6 +68,7 @@ class App extends Component {
     })
     let publishID = newLocation.key
     this.setState({submitState: 'done', publishID: publishID})
+    window.localStorage.removeItem('data')
     window.history.pushState({ publish: publishID }, 'published', publishID)
   }
 
@@ -81,6 +82,7 @@ class App extends Component {
 
   async unpublish () {
     await base.remove(`published/${this.state.publishID}`)
+    window.localStorage.removeItem('data')
     window.location.href = '/'
   }
 
@@ -127,6 +129,8 @@ class App extends Component {
         submitState: 'done',
         publisherID: data.userId,
         settings: data.metadata
+      }, () => {
+        this.updatePermission()
       })
     } else {
       let shifts = JSON.parse(window.localStorage.getItem('data', this.state.shifts))
@@ -135,9 +139,10 @@ class App extends Component {
       this.setState({
         loading: false,
         shifts
+      }, () => {
+        this.updatePermission()
       })
     }
-    this.updatePermission()
   }
 
   handleLogin () {
@@ -145,7 +150,9 @@ class App extends Component {
     firebase.auth().signInWithPopup(provider).then((result) => {
     // var token = result.credential.accessToken
       var user = result.user
-      this.setState({user})
+      this.setState({user}, () => {
+        this.updatePermission()
+      })
     }).catch((error) => {
       var errorCode = error.code
       var errorMessage = error.message
@@ -270,7 +277,7 @@ class App extends Component {
             </div>
             }
           </div>
-          <div className='box p-8 hidden sm:block'>
+          <div className='box p-8 hidden sm:block min-h-screen'>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
             {this.renderBody()}
           </div>
