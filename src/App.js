@@ -176,7 +176,7 @@ class App extends Component {
     } else {
       let end = moment()
       if (end.diff(this.state.checkInTime, 'minutes') === 0) {
-        window.alert('無法紀錄小於一分鐘的工時')
+        window.alert('無法記錄小於一分鐘的工時')
       } else {
         let start = this.state.checkInTime
         this.addItem(start.format('YYYY-MM-DD'), start.format('HH:mm'), end.format('YYYY-MM-DD'), end.format('HH:mm'))
@@ -264,7 +264,7 @@ class App extends Component {
           deletable={this.state.deletable} />
         <div className='max-w-2xl m-auto p-3 flex sm:block justify-between flex-col' style={{minHeight: '85vh'}}>
           <div className='py-8 flex justify-between'>
-            <h1 className='f-6 text-black'>記錄工時</h1>
+            <h1 className='f-6 text-black mx-auto sm:mx-0'>記錄工時</h1>
             { !this.state.writable ? <div />
             : <div className='hidden sm:flex'>
               <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>
@@ -281,9 +281,12 @@ class App extends Component {
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
             {this.renderBody()}
           </div>
+          <div className='block sm:hidden mx-auto'>
+            <img src='stopwatch.svg' width={200} height={200} />
+          </div>
           { !this.state.writable ? <div />
           : <div className='block sm:hidden'>
-            <div className='nav-btn ml-2 bg-blue text-white py-8' onClick={this.checkIn.bind(this)}>
+            <div className='nav-btn ml-2 bg-blue text-white py-8 text-xl' onClick={this.checkIn.bind(this)}>
               <span className='block mx-auto'>
                 <i className='fas fa-clipboard-check' />&nbsp;
                 {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
@@ -296,7 +299,6 @@ class App extends Component {
           Powered by g0v
         </div>
       </div>
-
     )
   }
 
