@@ -39,7 +39,7 @@ class Alerts extends React.Component {
         break
     }
     return (
-      <div className='mb-8'>
+      <div className='mb-8 w-64 sm:w-auto'>
         {errorsAndWarnings.map(c => {
           if (c.type === 'warning') {
             return <Alert key={`${c.offset}-${c.msg}`} title={title[c.type]} text={c.msg} color='green' />

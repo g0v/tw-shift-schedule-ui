@@ -259,7 +259,10 @@ class App extends Component {
             {this.renderBody()}
           </div>
           <div className='block sm:hidden mx-auto'>
-            <img src='stopwatch.svg' width={200} height={200} />
+            <div className='text-center my-6'>
+              已記錄 {this.state.shifts.length} 項工時
+            </div>
+            <Alerts settings={this.state.settings} shifts={this.state.shifts} />
           </div>
           { !this.state.writable ? <div />
           : <div className='block sm:hidden'>
