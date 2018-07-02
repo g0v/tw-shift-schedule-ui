@@ -44,13 +44,20 @@ class App extends Component {
       }
     })
     let publishID = newLocation.key
-    this.setState({submitState: 'done', publishID: publishID})
+    this.setState({
+      submitState: 'done',
+      publishID: publishID,
+      publisherID: this.state.user.uid
+    })
     window.localStorage.removeItem('data')
     window.history.pushState({ publish: publishID }, 'published', publishID)
   }
 
   handleSubmit (e) {
-    this.submit()
+    if (window.confirm(`發佈前請同意使用者條款：
+
+1. 你送出的資料由你所擁有
+2. 送出的資料將會公開讓所有人檢閱`)) { this.submit() }
   }
 
   handleUnpublish (e) {
