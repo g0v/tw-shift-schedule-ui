@@ -30,29 +30,6 @@ class App extends Component {
     }
   }
 
-  async fetch () {
-    let path = window.location.pathname.match(/^\/(.+)/)
-    let publishID
-    if (path) {
-      // load from published shifts
-      publishID = path[1]
-      let data = await base.fetch(`published/${publishID}`, { context: this })
-      console.log(data)
-      this.setState({
-        publishID: publishID,
-        shifts: data.shifts,
-        loading: false,
-        submitState: 'done',
-        publisherID: data.userId,
-        settings: data.metadata
-      })
-    } else {
-      this.setState({
-        loading: false
-      })
-    }
-  }
-
   componentDidMount () {
     this.load()
   }

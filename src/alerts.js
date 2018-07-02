@@ -21,7 +21,6 @@ class Alerts extends React.Component {
     let overworkCauses = shift.overwork.check(schedule)
 
     let errorsAndWarnings = []
-    console.log(this.props.settings)
     switch (this.props.settings.selectedTransform) {
       case undefined:
         errorsAndWarnings = shift.validate(schedule)
