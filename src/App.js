@@ -250,15 +250,16 @@ class App extends Component {
           <div className='py-8 flex justify-between'>
             <h1 className='f-6 text-black mx-auto sm:mx-0'>記錄工時</h1>
             { !this.state.writable ? <div />
-            : <div className='hidden sm:flex'>
-              <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>
-                <span>
-                  <i className='fas fa-clipboard-check' />&nbsp;
-                  {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
-                </span>
+              : <div className='hidden sm:flex'>
+                <div className='leading-loose pt-2'><a href='https://g0v.hackmd.io/s/SJ6YXCw7Q'>匯入說明<i className='far fa-question-circle' /></a></div>
+                <CSVUpload callback={this.handleCSVUpload.bind(this)} />
+                <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>
+                  <span>
+                    <i className='fas fa-clipboard-check' />&nbsp;
+                    {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
+                  </span>
+                </div>
               </div>
-              <CSVUpload callback={this.handleCSVUpload.bind(this)} />
-            </div>
             }
           </div>
           <div className='box p-8 hidden sm:block min-h-screen'>
