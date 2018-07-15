@@ -31,20 +31,20 @@ class Canvas extends React.Component {
   }
 
   render () {
-    // items = 加上隱藏工時後的班表
-    let items = visItems(this.props.shifts, this.props.settings)
-    let { settings } = this.props
-
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
         <div />
       )
     }
 
+    // items = 加上隱藏工時後的班表
+    let items = visItems(this.props.shifts, this.props.settings)
+    let { settings } = this.props
+
     // 顯示班表
     let listItems = items.map((item, index) => {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
-      let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
+      let y = getRowOffset(items[0], item)
       return (
         <Rect key={item.start.format()}
           x={x}
@@ -64,7 +64,7 @@ class Canvas extends React.Component {
     // 顯示班的時間長度
     let listItemlabels = items.map((item, index) => {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
-      let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
+      let y = getRowOffset(items[0], item)
       return (
         <Text key={item.start.format()}
           x={x}
@@ -80,7 +80,7 @@ class Canvas extends React.Component {
     if (settings.hiddenBefore > 0 || settings.hiddenAfter > 0) {
       for (let item of items) {
         let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100 - (settings.hiddenBefore / 2)
-        let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
+        let y = getRowOffset(items[0], item)
         if (!item.split || item.split === 'head') {
           hiddens.push(
             <Rect key={item.start.format() + `${j}`}
@@ -139,5 +139,9 @@ class Canvas extends React.Component {
     )
   }
 };
+
+function getRowOffset (firstItem, item) {
+  return item.start.clone().startOf('day').diff(firstItem.start.clone().startOf('day'), 'day') * 50 + 20
+}
 
 export default Canvas
