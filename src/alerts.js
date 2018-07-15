@@ -37,6 +37,8 @@ class Alerts extends React.Component {
       case 'eight_week':
         errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.eight_week })
         break
+      default:
+        throw new Error(`shouldn't happend`)
     }
     return (
       <div className='mb-8 w-64 sm:w-auto'>
