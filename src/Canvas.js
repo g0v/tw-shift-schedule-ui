@@ -79,7 +79,7 @@ class Canvas extends React.Component {
     let j = 0
     if (settings.hiddenBefore > 0 || settings.hiddenAfter > 0) {
       for (let item of items) {
-        let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
+        let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100 - (settings.hiddenBefore / 2)
         let y = item.start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') * 50 + 20
         if (!item.split || item.split === 'head') {
           hiddens.push(
@@ -101,7 +101,7 @@ class Canvas extends React.Component {
         if (!item.split || item.split === 'tail') {
           hiddens.push(
             <Rect key={item.start.format() + `${j}`}
-              x={x + item.length / 2 - settings.hiddenAfter / 2}
+              x={x + (settings.hiddenBefore / 2) + item.length / 2}
               y={y}
               width={settings.hiddenAfter / 2}
               height={50}
