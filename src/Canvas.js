@@ -1,7 +1,7 @@
 
 import { Stage, Layer, Rect, Text } from 'react-konva'
 import Grid from './Canvas/Grid'
-import { momentFromItem, isAcrossDay } from './timeutil'
+import { visItems } from './timeutil'
 // import Segments from './Canvas/Segments'
 
 import consts from './const'
@@ -9,49 +9,10 @@ import consts from './const'
 var React = require('react')
 
 class Canvas extends React.Component {
-  listItems (raw) {
-    let { settings } = this.props
-    if (!this.props.shifts || this.props.shifts.length === 0) return []
-    let items = []
-    for (let item of this.props.shifts) {
-      let m = momentFromItem(item)
-      m.type = 'work'
-      if (!raw) {
-        m.start.subtract(settings.hiddenBefore, 'minutes')
-        m.end.add(settings.hiddenAfter, 'minutes')
-        m.length += (settings.hiddenBefore + settings.hiddenAfter)
-      }
-
-      // 如果跨日就切成兩個, 剛好壓線的話不算
-      if (isAcrossDay(m.start, m.end)) {
-        let s1 = m.start.clone()
-        let e1 = m.start.clone().endOf('day')
-        items.push({
-          start: s1,
-          end: e1,
-          length: e1.diff(s1, 'minutes'),
-          type: 'work',
-          split: 'head'
-        })
-        let s2 = m.end.clone().startOf('day')
-        let e2 = m.end.clone()
-        items.push({
-          start: s2,
-          end: e2,
-          length: e2.diff(s2, 'minutes'),
-          type: 'work',
-          split: 'tail'
-        })
-      } else {
-        items.push(m)
-      }
-    }
-    return items
-  }
-
   resize () {
     let canvasWrapWidth = document.querySelector('#canvas-wrap').offsetWidth
     let scaleX = canvasWrapWidth / consts.canvasDefaultSize
+    console.log(canvasWrapWidth, scaleX)
     if (scaleX !== this.state.scaleX) {
       this.setState({ scaleX: scaleX })
     }
@@ -71,8 +32,7 @@ class Canvas extends React.Component {
 
   render () {
     // items = 加上隱藏工時後的班表
-    let items = this.listItems()
-    // rawItems = 未加上隱藏工時的班表
+    let items = visItems(this.props.shifts, this.props.settings)
     let { settings } = this.props
 
     if (!this.props.shifts || this.props.shifts.length === 0) {
