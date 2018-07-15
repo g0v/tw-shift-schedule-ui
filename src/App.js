@@ -3,6 +3,7 @@ import base from './rebase'
 import Alerts from './alerts'
 import moment from 'moment'
 import Canvas from './Canvas'
+import MobileCanvas from './MobileCanvas'
 import Setting from './Setting'
 import CSVUpload from './CSVUpload'
 import Header from './Header'
@@ -21,7 +22,9 @@ class App extends Component {
       loading: true,
       settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none' },
       checkInTime: checkInTime,
-      canvasWrapSize: 0,
+      canvasWrapSize: consts.canvasDefaultSize,
+      mobileCanvasWrapSize: consts.mobileCanvasDefaultSize,
+      mobileCanvasShown: false,
       user: undefined,
       write: false
     })
@@ -90,6 +93,12 @@ class App extends Component {
     }
   }
 
+  handleMobileCanvasResize (size) {
+    if (size !== this.state.mobileCanvasWrapSize) {
+      this.setState({ mobileCanvasWrapSize: size })
+    }
+  }
+
   save () {
     if (this.state.submitState === 'done') {
       this.submit()
@@ -126,6 +135,14 @@ class App extends Component {
       }, () => {
         this.updatePermission()
       })
+    }
+  }
+
+  toggleMobileCanvas () {
+    if (this.state.mobileCanvasShown) {
+      this.setState({mobileCanvasShown: false})
+    } else {
+      this.setState({mobileCanvasShown: true})
     }
   }
 
@@ -272,15 +289,28 @@ class App extends Component {
             </div>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
           </div>
-          { !this.state.writable ? <div />
-          : <div className='block sm:hidden'>
-            <div className='nav-btn ml-2 bg-blue text-white py-8 text-xl' onClick={this.checkIn.bind(this)}>
-              <span className='block mx-auto'>
-                <i className='fas fa-clipboard-check' />&nbsp;
-                {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
-              </span>
-            </div>
+          <div className='sm:hidden mx-auto' id='canvas-wrap'>
+            {this.state.mobileCanvasShown
+              ? <div className='text-center p-4 text-blue underline' onClick={this.toggleMobileCanvas.bind(this)}>隱藏圖表</div>
+              : <div className='text-center p-4 text-blue underline' onClick={this.toggleMobileCanvas.bind(this)}>顯示圖表</div>
+            }
+            {this.state.mobileCanvasShown
+              ? <MobileCanvas
+                settings={this.state.settings}
+                shifts={this.state.shifts}
+                onDelete={this.handleDelete.bind(this)}
+                onSetHeight={this.handleMobileCanvasResize.bind(this)} /> : ''
+            }
           </div>
+          { !this.state.writable ? <div />
+            : <div className='block sm:hidden'>
+              <div className='nav-btn ml-2 bg-blue text-white py-8 text-xl' onClick={this.checkIn.bind(this)}>
+                <span className='block mx-auto'>
+                  <i className='fas fa-clipboard-check' />&nbsp;
+                  {this.state.checkInTime ? `已於 ${moment(this.state.checkInTime).format('HH:mm')} 上班，打卡下班` : '打卡上班'}
+                </span>
+              </div>
+            </div>
           }
         </div>
         <div className='mt-4 text-center'>
@@ -300,7 +330,7 @@ class App extends Component {
     }
     return <div className='flex mb-4' ref={this.setCanvasWrapRef} style={{ height: this.state.canvasWrapSize }}>
       <div className='w-3/4 h-12 border-r border-grey' id='canvas-wrap'>
-        <div className='center' style={{ width: consts.canvasDefaultSize }}>
+        <div className='center' style={{ width: this.state.canvasWrapSize }}>
           <Canvas
             settings={this.state.settings}
             shifts={this.state.shifts}
@@ -310,7 +340,7 @@ class App extends Component {
       </div>
       <div className='w-1/4 h-12 ml-8' >
         <Setting
-          onHiddenUpdate={this.handleHiddenUpdate.bind(this)}
+          onUpdate={this.handleHiddenUpdate.bind(this)}
           onTransformUpdate={this.handleTransformUpdate.bind(this)}
           settings={this.state.settings} />
       </div>

@@ -1,34 +1,16 @@
 
 import { Stage, Layer, Rect, Text } from 'react-konva'
-import Grid from './Canvas/Grid'
+import Grid from './MobileGrid'
 import { visItems } from './timeutil'
-// import Segments from './Canvas/Segments'
 
 import consts from './const'
+
+const rowHeight = 50
+const headerHeight = 20
 
 var React = require('react')
 
 class Canvas extends React.Component {
-  resize () {
-    let canvasWrapWidth = document.querySelector('#canvas-wrap').offsetWidth
-    let scaleX = canvasWrapWidth / consts.canvasDefaultSize
-    if (scaleX !== this.state.scaleX) {
-      this.setState({ scaleX: scaleX })
-    }
-  }
-
-  componentWillMount () {
-    this.setState({
-      scaleX: 1
-    })
-  }
-
-  componentDidMount () {
-    this.resize()
-
-    window.addEventListener('resize', this.resize.bind(this))
-  }
-
   render () {
     if (!this.props.shifts || this.props.shifts.length === 0) {
       return (
@@ -42,14 +24,14 @@ class Canvas extends React.Component {
 
     // 顯示班表
     let listItems = items.map((item, index) => {
-      let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
+      let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 6) + 60
       let y = getRowOffset(items[0], item)
       return (
         <Rect key={item.start.format()}
           x={x}
           y={y}
-          width={item.length / 2}
-          height={50}
+          width={item.length / 6}
+          height={rowHeight}
           onMouseEnter={() => {
             document.body.style.cursor = 'pointer'
           }}
@@ -62,7 +44,7 @@ class Canvas extends React.Component {
 
     // 顯示班的時間長度
     let listItemlabels = items.map((item, index) => {
-      let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
+      let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 6) + 60
       let y = getRowOffset(items[0], item)
       return (
         <Text key={item.start.format()}
@@ -78,15 +60,15 @@ class Canvas extends React.Component {
     let j = 0
     if (settings.hiddenBefore > 0 || settings.hiddenAfter > 0) {
       for (let item of items) {
-        let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100 - (settings.hiddenBefore / 2)
+        let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 6) + 60 - (settings.hiddenBefore / 6)
         let y = getRowOffset(items[0], item)
         if (!item.split || item.split === 'head') {
           hiddens.push(
             <Rect key={item.start.format() + `${j}`}
               x={x}
               y={y}
-              width={settings.hiddenBefore / 2}
-              height={50}
+              width={settings.hiddenBefore / 6}
+              height={rowHeight}
               onMouseEnter={() => {
                 document.body.style.cursor = 'pointer'
               }}
@@ -100,10 +82,10 @@ class Canvas extends React.Component {
         if (!item.split || item.split === 'tail') {
           hiddens.push(
             <Rect key={item.start.format() + `${j}`}
-              x={x + (settings.hiddenBefore / 2) + item.length / 2}
+              x={x + (settings.hiddenBefore / 6) + item.length / 6}
               y={y}
-              width={settings.hiddenAfter / 2}
-              height={50}
+              width={settings.hiddenAfter / 6}
+              height={rowHeight}
               onMouseEnter={() => {
                 document.body.style.cursor = 'pointer'
               }}
@@ -118,15 +100,15 @@ class Canvas extends React.Component {
     }
 
     let rowCount = (items[items.length - 1].start.clone().startOf('day').diff(items[0].start.clone().startOf('day'), 'day') + 1)
-    let height = rowCount * 50 + 20
+    let height = rowCount * rowHeight + headerHeight
 
     setTimeout(() => {
       this.props.onSetHeight(height)
     }, 1)
 
     return (
-      <div>
-        <Stage width={consts.canvasDefaultSize} height={height} scaleX={this.state.scaleX}>
+      <div style={{width: consts.mobileCanvasDefaultSize}}>
+        <Stage width={consts.mobileCanvasDefaultSize} height={height}>
           <Grid shiftItems={items} />
           <Layer>
             {listItems}
@@ -140,7 +122,7 @@ class Canvas extends React.Component {
 };
 
 function getRowOffset (firstItem, item) {
-  return item.start.clone().startOf('day').diff(firstItem.start.clone().startOf('day'), 'day') * 50 + 20
+  return item.start.clone().startOf('day').diff(firstItem.start.clone().startOf('day'), 'day') * rowHeight + headerHeight
 }
 
 export default Canvas
