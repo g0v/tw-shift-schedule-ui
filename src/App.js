@@ -268,7 +268,7 @@ class App extends Component {
             <h1 className='f-6 text-black mx-auto sm:mx-0'>記錄工時</h1>
             { !this.state.writable ? <div />
               : <div className='hidden sm:flex'>
-                <div className='leading-loose pt-2'><a href='https://g0v.hackmd.io/s/SJ6YXCw7Q'>匯入說明<i className='far fa-question-circle' /></a></div>
+                <div className='leading-loose pt-2'><a href='https://g0v.hackmd.io/s/SJ6YXCw7Q' target='_blank' rel='noopener noreferrer'>匯入說明<i className='far fa-question-circle' /></a></div>
                 <CSVUpload callback={this.handleCSVUpload.bind(this)} />
                 <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>
                   <span>
