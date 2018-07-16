@@ -286,14 +286,15 @@ class App extends Component {
           <div className='block sm:hidden mx-auto'>
             <div className='text-center my-6'>
               已記錄 {this.state.shifts.length} 項工時
+              <div>{this.state.mobileCanvasShown
+                ? <div className='text-center p-1 text-blue underline' onClick={this.toggleMobileCanvas.bind(this)}>隱藏完整記錄</div>
+                : <div className='text-center p-1 text-blue underline' onClick={this.toggleMobileCanvas.bind(this)}>顯示完整記錄</div>
+              }
+              </div>
             </div>
             <Alerts settings={this.state.settings} shifts={this.state.shifts} />
           </div>
           <div className='sm:hidden mx-auto' id='canvas-wrap'>
-            {this.state.mobileCanvasShown
-              ? <div className='text-center p-4 text-blue underline' onClick={this.toggleMobileCanvas.bind(this)}>隱藏圖表</div>
-              : <div className='text-center p-4 text-blue underline' onClick={this.toggleMobileCanvas.bind(this)}>顯示圖表</div>
-            }
             {this.state.mobileCanvasShown
               ? <MobileCanvas
                 settings={this.state.settings}
