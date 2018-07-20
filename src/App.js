@@ -191,6 +191,9 @@ class App extends Component {
     let data = text.split('\n').map(r => r.split(','))
     let newShifts = []
     for (let d of data) {
+      // skip empty line
+      if (d.length === 1 && d[0].match(/\s?/)) continue
+
       let [start, end] = d
       if (!validateImport(start)) {
         window.alert(`格式錯誤：${start}，應為 YYYY-MM-DD HH:mm `)
