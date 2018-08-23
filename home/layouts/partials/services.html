@@ -1,0 +1,14 @@
+<div class="row section featured topspace">
+
+    <h2 class="section-title"><span>特色功能</span></h2>
+
+    <div class="service">
+        {{ range where .Data.Pages "Section" "service" }}
+            <div class="col-sm-6 col-md-3">
+                <h3 class="text-center">{{ .Title }}</h3>
+                <p>{{ .Summary }}</p>
+            </div>
+        {{ end }}
+    </div>
+
+</div> <!-- / section -->
