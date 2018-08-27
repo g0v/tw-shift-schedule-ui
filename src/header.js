@@ -7,16 +7,16 @@ class Header extends React.Component {
         <div className='flex justify-between w-full'>
           <div>
             <div className='border-r pr-4 border-grey inline-block'>
-              勞工小幫手
+              <a className='no-underline' href='/'>勞工小幫手</a>
             </div>
             <div className='pl-4 hidden sm:inline-block'>
-              記錄工時
+              <a className='no-underline' href='/new'>記錄工時</a>
             </div>
             <div className='pl-4 hidden sm:inline-block'>
               產生班表
             </div>
             <div className='pl-4 hidden sm:inline-block'>
-              追蹤法令
+              <a className='no-underline' href='https://github.com/g0v/tw-shift-schedule/issues'>追蹤法令</a>
             </div>
           </div>
           <div>
