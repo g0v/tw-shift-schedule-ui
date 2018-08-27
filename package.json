@@ -19,7 +19,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "cp build/index.html build/404.html && firebase deploy",
+    "deploy": "yarn build && mv build/index.html build/404.html && cp -r home/docs/* build/ && firebase deploy",
     "build-css": "npx tailwind build src/style.css -c tailwind.js -o public/index.css"
   },
   "devDependencies": {
