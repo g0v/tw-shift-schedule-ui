@@ -10,26 +10,26 @@ class Header extends React.Component {
               勞工小幫手
             </div>
             <div className='pl-4 hidden sm:inline-block'>
-                記錄工時
-              </div>
+              記錄工時
+            </div>
             <div className='pl-4 hidden sm:inline-block'>
-                產生班表
-              </div>
+              產生班表
+            </div>
             <div className='pl-4 hidden sm:inline-block'>
-                追蹤法令
-              </div>
+              追蹤法令
+            </div>
           </div>
           <div>
-            { this.props.user
-            ? <div>
-              {this.submitBtn()}
-              <div className='pl-4 inline-block cursor-pointer' onClick={this.props.logout}>
-                登出
+            {this.props.user
+              ? <div>
+                {this.submitBtn()}
+                <div className='pl-4 inline-block cursor-pointer' onClick={this.props.logout}>
+                  登出
                 </div>
-            </div>
-            : <div className='pl-4 inline-block cursor-pointer' onClick={this.props.login}>
-              登入
-            </div>
+              </div>
+              : <div className='pl-4 inline-block cursor-pointer' onClick={this.props.login}>
+                登入
+              </div>
             }
           </div>
         </div>
@@ -45,8 +45,8 @@ class Header extends React.Component {
     } else if (this.props.submitState === 'done') {
       if (this.props.deletable) {
         return <div className='pl-4 inline-block cursor-pointer text-red' onClick={this.props.unpublish}>
-        刪除此記錄
-      </div>
+          刪除此記錄
+        </div>
       }
       return <div className='pl-4 inline-block text-green' />
     } else {

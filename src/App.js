@@ -18,7 +18,8 @@ class App extends Component {
     if (checkInTime) checkInTime = moment(checkInTime)
     this.setState({
       shifts: [],
-      publishID: undefined,
+      publishID: undefined, // 發佈出去的 ID，由 firebase 產生
+      docID: undefined, // local 建立的暫存 ID
       loading: true,
       settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none' },
       checkInTime: checkInTime,
@@ -34,11 +35,34 @@ class App extends Component {
   }
 
   componentDidMount () {
-    this.load()
+    let path = window.location.pathname.match(/^\/(.+)/)[1]
+
+    if (!path || path === '' || path === 'new') {
+      this.init()
+    } else {
+      let docID = path
+      if (JSON.parse(window.localStorage.getItem(`${consts.localstorageKey}-${docID}`))) {
+        this.loadFromLocalStorage(docID)
+      } else {
+        this.loadFromFirebase(docID)
+      }
+    }
+  }
+
+  init () {
+    let docID = +(new Date())
+
+    this.setState({
+      loading: false,
+      docID: docID
+    }, () => {
+      window.history.pushState(null, '', `/${docID}`)
+      this.updatePermission()
+    })
   }
 
   async submit () {
-    this.setState({submitState: 'submitting'})
+    this.setState({ submitState: 'submitting' })
     let newLocation = await base.push('published', {
       data: {
         shifts: this.state.shifts,
@@ -52,7 +76,7 @@ class App extends Component {
       publishID: publishID,
       publisherID: this.state.user.uid
     })
-    window.localStorage.removeItem('data')
+    window.localStorage.removeItem(consts.localstorageKey)
     window.history.pushState({ publish: publishID }, 'published', publishID)
   }
 
@@ -69,7 +93,7 @@ class App extends Component {
 
   async unpublish () {
     await base.remove(`published/${this.state.publishID}`)
-    window.localStorage.removeItem('data')
+    window.localStorage.removeItem(consts.localstorageKey)
     window.location.href = '/'
   }
 
@@ -99,59 +123,58 @@ class App extends Component {
     }
   }
 
-  save () {
+  saveToLocal (docID) {
     if (this.state.submitState === 'done') {
       this.submit()
     } else {
-      window.localStorage.setItem('data', JSON.stringify(this.state.shifts))
+      window.localStorage.setItem(`${consts.localstorageKey}-${docID}`, JSON.stringify(this.state.shifts))
     }
   }
 
-  async load () {
-    let path = window.location.pathname.match(/^\/(.+)/)
-    let publishID
-    if (path) {
-      // load from published shifts
-      publishID = path[1]
-      let data = await base.fetch(`published/${publishID}`, { context: this })
-      console.log(data)
-      this.setState({
-        publishID: publishID,
-        shifts: data.shifts,
-        loading: false,
-        submitState: 'done',
-        publisherID: data.userId,
-        settings: data.metadata
-      }, () => {
-        this.updatePermission()
-      })
-    } else {
-      let shifts = JSON.parse(window.localStorage.getItem('data', this.state.shifts))
-      if (!shifts) shifts = []
-      console.log('loaded from localStorage', shifts)
-      this.setState({
-        loading: false,
-        shifts
-      }, () => {
-        this.updatePermission()
-      })
+  async loadFromFirebase (docID) {
+    let data = await base.fetch(`published/${docID}`, { context: this })
+    console.log('load from firebase', data)
+    if (!data.shifts) { // firebase 上找不到這個 docID
+      return this.init()
     }
+
+    this.setState({
+      publishID: docID,
+      shifts: data.shifts,
+      loading: false,
+      submitState: 'done',
+      publisherID: data.userId,
+      settings: data.metadata
+    }, () => {
+      this.updatePermission()
+    })
+  }
+
+  async loadFromLocalStorage (docID) {
+    let shifts = JSON.parse(window.localStorage.getItem(`${consts.localstorageKey}-${docID}`))
+    console.log('loaded from localStorage', shifts)
+    this.setState({
+      loading: false,
+      shifts
+    }, () => {
+      this.updatePermission()
+    })
   }
 
   toggleMobileCanvas () {
     if (this.state.mobileCanvasShown) {
-      this.setState({mobileCanvasShown: false})
+      this.setState({ mobileCanvasShown: false })
     } else {
-      this.setState({mobileCanvasShown: true})
+      this.setState({ mobileCanvasShown: true })
     }
   }
 
   handleLogin () {
     var provider = new firebase.auth.FacebookAuthProvider()
     firebase.auth().signInWithPopup(provider).then((result) => {
-    // var token = result.credential.accessToken
+      // var token = result.credential.accessToken
       var user = result.user
-      this.setState({user}, () => {
+      this.setState({ user }, () => {
         this.updatePermission()
       })
     }).catch((error) => {
@@ -165,14 +188,14 @@ class App extends Component {
 
   handleLogout () {
     firebase.auth().signOut().then(() => {
-      this.setState({user: undefined})
+      this.setState({ user: undefined })
     })
   }
 
   checkIn () {
     if (!this.state.checkInTime) {
       let checkInTime = moment()
-      this.setState({checkInTime})
+      this.setState({ checkInTime })
       window.localStorage.setItem('checkInTime', checkInTime.format())
     } else {
       let end = moment()
@@ -217,7 +240,7 @@ class App extends Component {
     console.log(newShifts)
 
     this.setState({ shifts: newShifts }, () => {
-      this.save()
+      this.saveToLocal(this.state.docID)
     })
   }
 
@@ -234,7 +257,7 @@ class App extends Component {
     this.setState({
       shifts: newShift
     }, () => {
-      this.save()
+      this.saveToLocal(this.state.docID)
     })
   }
 
@@ -252,7 +275,7 @@ class App extends Component {
       }
     }
 
-    this.setState({deletable, writable})
+    this.setState({ deletable, writable })
   }
 
   render () {
@@ -266,10 +289,10 @@ class App extends Component {
           submitState={this.state.submitState}
           unpublish={this.handleUnpublish.bind(this)}
           deletable={this.state.deletable} />
-        <div className='max-w-2xl m-auto p-3 flex sm:block justify-between flex-col' style={{minHeight: '85vh'}}>
+        <div className='max-w-2xl m-auto p-3 flex sm:block justify-between flex-col' style={{ minHeight: '85vh' }}>
           <div className='py-8 flex justify-between'>
             <h1 className='f-6 text-black mx-auto sm:mx-0'>記錄工時</h1>
-            { !this.state.writable ? <div />
+            {!this.state.writable ? <div />
               : <div className='hidden sm:flex'>
                 <div className='leading-loose pt-2'><a href='https://g0v.hackmd.io/s/SJ6YXCw7Q' target='_blank' rel='noopener noreferrer'>匯入說明<i className='far fa-question-circle' /></a></div>
                 <CSVUpload callback={this.handleCSVUpload.bind(this)} />
@@ -306,7 +329,7 @@ class App extends Component {
                 onSetHeight={this.handleMobileCanvasResize.bind(this)} /> : ''
             }
           </div>
-          { !this.state.writable ? <div />
+          {!this.state.writable ? <div />
             : <div className='block sm:hidden'>
               <div className='nav-btn ml-2 bg-blue text-white py-8 text-xl' onClick={this.checkIn.bind(this)}>
                 <span className='block mx-auto'>
