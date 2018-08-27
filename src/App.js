@@ -35,7 +35,9 @@ class App extends Component {
   }
 
   componentDidMount () {
-    let path = window.location.pathname.match(/^\/(.+)/)[1]
+    let path = window.location.pathname.match(/^\/(.+)/)
+
+    if (path) path = path[1]
 
     if (!path || path === '' || path === 'new') {
       this.init()
@@ -155,6 +157,7 @@ class App extends Component {
     console.log('loaded from localStorage', shifts)
     this.setState({
       loading: false,
+      docID,
       shifts
     }, () => {
       this.updatePermission()
@@ -306,7 +309,7 @@ class App extends Component {
             }
           </div>
           <div className='box p-8 hidden sm:block min-h-screen'>
-            <Alerts settings={this.state.settings} shifts={this.state.shifts} />
+            <Alerts settings={this.state.settings} shifts={this.state.shifts} local={!!this.state.docID} />
             {this.renderBody()}
           </div>
           <div className='block sm:hidden mx-auto'>
@@ -318,7 +321,7 @@ class App extends Component {
               }
               </div>
             </div>
-            <Alerts settings={this.state.settings} shifts={this.state.shifts} />
+            <Alerts settings={this.state.settings} shifts={this.state.shifts} local={!!this.state.docID} />
           </div>
           <div className='sm:hidden mx-auto' id='canvas-wrap'>
             {this.state.mobileCanvasShown
