@@ -21,7 +21,7 @@ class App extends Component {
       publishID: undefined, // 發佈出去的 ID，由 firebase 產生
       docID: undefined, // local 建立的暫存 ID
       loading: true,
-      settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none' },
+      settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none', title: undefined },
       checkInTime: checkInTime,
       canvasWrapSize: consts.canvasDefaultSize,
       mobileCanvasWrapSize: consts.mobileCanvasDefaultSize,
@@ -281,6 +281,15 @@ class App extends Component {
     this.setState({ deletable, writable })
   }
 
+  updateTitle () {
+    let title = window.prompt('新的文件名稱')
+
+    let settings = Object.assign({}, this.state.settings)
+    settings.title = title
+
+    this.setState({ settings })
+  }
+
   render () {
     return (
       <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8 min-h-screen'>
@@ -294,7 +303,7 @@ class App extends Component {
           deletable={this.state.deletable} />
         <div className='max-w-2xl m-auto p-3 flex sm:block justify-between flex-col' style={{ minHeight: '85vh' }}>
           <div className='py-8 flex justify-between'>
-            <h1 className='f-6 text-black mx-auto sm:mx-0'>記錄工時</h1>
+            <h1 className='f-6 text-black mx-auto sm:mx-0' onClick={this.updateTitle.bind(this)}>{this.state.settings.title || '未命名文件'}</h1>
             {!this.state.writable ? <div />
               : <div className='hidden sm:flex'>
                 <div className='leading-loose pt-2'><a href='https://g0v.hackmd.io/s/SJ6YXCw7Q' target='_blank' rel='noopener noreferrer'>匯入說明<i className='far fa-question-circle' /></a></div>
