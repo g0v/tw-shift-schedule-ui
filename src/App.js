@@ -26,8 +26,7 @@ class App extends Component {
       canvasWrapSize: consts.canvasDefaultSize,
       mobileCanvasWrapSize: consts.mobileCanvasDefaultSize,
       mobileCanvasShown: false,
-      user: undefined,
-      write: false
+      user: undefined
     })
     this.setCanvasWrapRef = ele => {
       this.canvasWrap = ele
@@ -282,6 +281,8 @@ class App extends Component {
   }
 
   updateTitle () {
+    if (!this.state.writable) return
+
     let title = window.prompt('新的文件名稱')
 
     let settings = Object.assign({}, this.state.settings)
