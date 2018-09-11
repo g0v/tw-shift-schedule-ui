@@ -192,7 +192,7 @@ class Create extends Component {
       return ''
     }
     let e = this.state.createError[0]
-    let errData = JSON.parse(e.toString().match(/Unable to schedule: (.+)/)[1])
+    let errData = e.pos
     let errMsg = `${errData.from} ~ ${errData.to}。需求人數：${errData.required}`
     return <div className='bg-red-lightest border-red-light text-red-dark mb-2 border pl-4 pr-8 py-3 rounded relative' role='alert'>
       <strong className='font-bold'>錯誤</strong>：

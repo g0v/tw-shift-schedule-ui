@@ -13,7 +13,7 @@ class Header extends React.Component {
               <a className='no-underline' href='/new'>記錄工時</a>
             </div>
             <div className='pl-4 hidden sm:inline-block'>
-              <a classnName='no-uderline' href='/c/'>產生班表</a>
+              <a className='no-underline' href='/c/'>產生班表</a>
             </div>
             <div className='pl-4 hidden sm:inline-block'>
               <a className='no-underline' href='https://github.com/g0v/tw-shift-schedule/issues'>追蹤法令</a>
