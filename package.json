@@ -11,6 +11,7 @@
     "react-datetime": "^2.15.0",
     "react-dom": "^16.2.0",
     "react-konva": "^1.6.5",
+    "react-meta-tags": "^0.5.1",
     "react-scripts": "1.1.0",
     "tw-shift-schedule": "^2.2.0"
   },

@@ -5409,6 +5409,13 @@ react-konva@^1.6.5:
     fbjs "^0.8.14"
     react-reconciler "^0.5.0"
 
+react-meta-tags@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-meta-tags/-/react-meta-tags-0.5.1.tgz#41579e9b5c98762ee847841f53eb593f8bd169d4"
+  dependencies:
+    babel-runtime "^6.26.0"
+    prop-types "^15.6.0"
+
 react-onclickoutside@^6.5.0:
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"

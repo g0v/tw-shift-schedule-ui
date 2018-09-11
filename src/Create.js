@@ -7,8 +7,8 @@ import Header from './Header'
 import { momentFromItem } from './timeutil'
 import DateTime from 'react-datetime'
 import ReactDOM from 'react-dom'
-import Alerts from './alerts'
 import shift from 'tw-shift-schedule'
+import MetaTags from 'react-meta-tags'
 
 import consts from './const'
 
@@ -203,6 +203,13 @@ class Create extends Component {
   render () {
     return (
       <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8 min-h-screen'>
+        <div className='wrapper'>
+          <MetaTags>
+            <title>幫你排班表</title>
+            <meta name='viewport' content='user-scalable = no' />
+          </MetaTags>
+          <div className='content'> Some Content </div>
+        </div>
         <Header
           user={this.state.user}
           submitState={this.state.submitState}
@@ -223,7 +230,7 @@ class Create extends Component {
               </div>
             </div>
           </div>
-          <div className='box p-8 hidden sm:block min-h-screen'>
+          <div className='box p-8 min-h-screen'>
             <div className='mb-8 w-64 sm:w-auto'>
               {this.renderCreatedLinks()}
               {this.renderCreateError()}
@@ -231,7 +238,7 @@ class Create extends Component {
             {this.renderAddItemModal()}
             {this.renderBody()}
           </div>
-          <div className='block sm:hidden mx-auto'>
+          {/* <div className='block sm:hidden mx-auto'>
             <div className='text-center my-6'>
               已記錄 {this.state.shifts.length} 項工時
               <div>{this.state.mobileCanvasShown
@@ -240,7 +247,7 @@ class Create extends Component {
               }
               </div>
             </div>
-          </div>
+          </div> */}
           <div className='sm:hidden mx-auto' id='canvas-wrap'>
             {this.state.mobileCanvasShown
               ? <MobileCanvas
