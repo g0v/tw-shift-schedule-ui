@@ -64,6 +64,16 @@ class Canvas extends React.Component {
     let listItemlabels = items.map((item, index) => {
       let x = Math.floor((item.start.hour() * 60 + item.start.minutes()) / 2) + 100
       let y = getRowOffset(items[0], item)
+      console.log(item)
+      if (item.label) {
+        return (
+          <Text key={item.start.format()}
+            x={x}
+            y={y}
+            text={item.label}
+            color='black' />
+        )
+      }
       return (
         <Text key={item.start.format()}
           x={x}

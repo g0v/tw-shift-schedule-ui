@@ -4786,6 +4786,10 @@ button,
  * @import "utilities/skew-transforms";
  */
 
+input {
+  border: 1px solid #000;
+}
+
 @media (min-width: 576px) {
   .sm\:list-reset {
     list-style: none;

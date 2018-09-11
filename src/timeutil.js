@@ -15,7 +15,7 @@ function momentFromItem (item) {
   let end = moment(`${item.endDate} ${item.endTime}:00`, 'YYYY-MM-DD HH:mm:ss')
   let length = end.diff(start, 'minutes')
   return {
-    start, end, length
+    start, end, length, label: item.label
   }
 }
 
@@ -36,7 +36,8 @@ function visItems (shifts, settings) {
         end: e1,
         length: e1.diff(s1, 'minutes'),
         type: 'work',
-        split: 'head'
+        split: 'head',
+        label: m.label
       })
       let s2 = m.end.clone().startOf('day')
       let e2 = m.end.clone()
@@ -45,7 +46,8 @@ function visItems (shifts, settings) {
         end: e2,
         length: e2.diff(s2, 'minutes'),
         type: 'work',
-        split: 'tail'
+        split: 'tail',
+        label: m.label
       })
     } else {
       items.push(m)

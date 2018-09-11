@@ -9,6 +9,7 @@ import CSVUpload from './CSVUpload'
 import Header from './Header'
 import { momentFromItem } from './timeutil'
 import firebase from 'firebase'
+import shift from 'tw-shift-schedule'
 
 import consts from './const'
 
@@ -280,6 +281,48 @@ class App extends Component {
     this.setState({ deletable, writable })
   }
 
+  validateShifts () {
+    let local = !!this.state.docID
+    if (this.state.shifts.length === 0 && local) return { errorsAndWarnings: [], overworkCauses: [] }
+
+    let shifts = []
+    let errorsAndWarnings = []
+    let overworkCauses = []
+    if (this.state.shifts.length > 0) {
+      for (let item of this.state.shifts) {
+        shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
+      }
+
+      let schedule = shift.Schedule.fromTime(shifts)
+      overworkCauses = shift.overwork.check(schedule)
+
+      switch (this.state.settings.selectedTransform) {
+        case undefined:
+          errorsAndWarnings = shift.validate(schedule)
+          break
+        case 'none':
+          errorsAndWarnings = shift.validate(schedule)
+          break
+        case 'two_week':
+          errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.two_week })
+          break
+        case 'four_week':
+          errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.four_week })
+          break
+        case 'eight_week':
+          errorsAndWarnings = shift.validate(schedule, { transformed: shift.validate.eight_week })
+          break
+        default:
+          throw new Error(`shouldn't happend`)
+      }
+    }
+    if (this.props.local) {
+      errorsAndWarnings.unshift({ type: 'warning', offset: 0, msg: '這份班表暫存在此台電腦上，尚未發佈' })
+    }
+
+    return { errorsAndWarnings, overworkCauses }
+  }
+
   updateTitle () {
     if (!this.state.writable) return
 
@@ -292,6 +335,8 @@ class App extends Component {
   }
 
   render () {
+    let { errorsAndWarnings, overworkCauses } = this.validateShifts()
+
     return (
       <div className='bg-soft text-grey-darker font-sans tracking-wide leading-normal pb-8 min-h-screen'>
         <Header
@@ -319,7 +364,7 @@ class App extends Component {
             }
           </div>
           <div className='box p-8 hidden sm:block min-h-screen'>
-            <Alerts settings={this.state.settings} shifts={this.state.shifts} local={!!this.state.docID} />
+            <Alerts errorsAndWarnings={errorsAndWarnings} overworkCauses={overworkCauses} />
             {this.renderBody()}
           </div>
           <div className='block sm:hidden mx-auto'>
@@ -331,7 +376,7 @@ class App extends Component {
               }
               </div>
             </div>
-            <Alerts settings={this.state.settings} shifts={this.state.shifts} local={!!this.state.docID} />
+            <Alerts errorsAndWarnings={errorsAndWarnings} overworkCauses={overworkCauses} />
           </div>
           <div className='sm:hidden mx-auto' id='canvas-wrap'>
             {this.state.mobileCanvasShown

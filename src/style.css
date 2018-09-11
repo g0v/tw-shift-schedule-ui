@@ -72,3 +72,8 @@
  * @import "utilities/background-patterns";
  * @import "utilities/skew-transforms";
  */
+
+
+input {
+  border: 1px solid #000;
+}

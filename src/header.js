@@ -1,7 +1,7 @@
 var React = require('react')
 
 class Header extends React.Component {
-  render () {
+  render() {
     return <div className='w-full bg-white border-t-2 border-red'>
       <div className='max-w-2xl m-auto p-3'>
         <div className='flex justify-between w-full'>
@@ -20,24 +20,27 @@ class Header extends React.Component {
             </div>
           </div>
           <div>
-            {this.props.user
-              ? <div>
-                {this.submitBtn()}
-                <div className='pl-4 inline-block cursor-pointer' onClick={this.props.logout}>
-                  登出
-                </div>
-              </div>
-              : <div className='pl-4 inline-block cursor-pointer' onClick={this.props.login}>
-                登入
-              </div>
-            }
+            {this.props.disableLogin ? '' : this.renderUser()}
           </div>
         </div>
       </div>
     </div>
   }
 
-  submitBtn () {
+  renderUser() {
+    return (this.props.user
+      ? <div>
+        {this.submitBtn()}
+        <div className='pl-4 inline-block cursor-pointer' onClick={this.props.logout}>
+          登出
+        </div>
+      </div>
+      : <div className='pl-4 inline-block cursor-pointer' onClick={this.props.login}>
+        登入
+      </div>)
+  }
+
+  submitBtn() {
     if (this.props.submitState === 'submitting') {
       return <div className='pl-4 inline-block cursor-pointer text-red'>
         發佈中...
