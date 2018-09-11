@@ -208,7 +208,6 @@ class Create extends Component {
             <title>幫你排班表</title>
             <meta name='viewport' content='user-scalable = no' />
           </MetaTags>
-          <div className='content'> Some Content </div>
         </div>
         <Header
           user={this.state.user}
