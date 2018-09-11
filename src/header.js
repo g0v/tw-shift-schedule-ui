@@ -1,7 +1,7 @@
 var React = require('react')
 
 class Header extends React.Component {
-  render() {
+  render () {
     return <div className='w-full bg-white border-t-2 border-red'>
       <div className='max-w-2xl m-auto p-3'>
         <div className='flex justify-between w-full'>
@@ -13,7 +13,7 @@ class Header extends React.Component {
               <a className='no-underline' href='/new'>記錄工時</a>
             </div>
             <div className='pl-4 hidden sm:inline-block'>
-              產生班表
+              <a classnName='no-uderline' href='/c/'>產生班表</a>
             </div>
             <div className='pl-4 hidden sm:inline-block'>
               <a className='no-underline' href='https://github.com/g0v/tw-shift-schedule/issues'>追蹤法令</a>
@@ -27,7 +27,7 @@ class Header extends React.Component {
     </div>
   }
 
-  renderUser() {
+  renderUser () {
     return (this.props.user
       ? <div>
         {this.submitBtn()}
@@ -40,7 +40,7 @@ class Header extends React.Component {
       </div>)
   }
 
-  submitBtn() {
+  submitBtn () {
     if (this.props.submitState === 'submitting') {
       return <div className='pl-4 inline-block cursor-pointer text-red'>
         發佈中...
