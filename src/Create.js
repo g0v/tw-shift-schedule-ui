@@ -188,12 +188,16 @@ class Create extends Component {
   }
 
   renderCreateError () {
-    return this.state.createError.map(e => {
-      return <div className='bg-red-lightest border-red-light text-red-dark mb-2 border pl-4 pr-8 py-3 rounded relative' role='alert'>
-        <strong className='font-bold'>錯誤</strong>：
-        <span className='block sm:inline'>排班失敗！ {e.toString()}</span>
-      </div>
-    })
+    if (this.state.createError.length === 0) {
+      return ''
+    }
+    let e = this.state.createError[0]
+    let errData = JSON.parse(e.toString().match(/Unable to schedule: (.+)/)[1])
+    let errMsg = `${errData.from} ~ ${errData.to}。需求人數：${errData.required}`
+    return <div className='bg-red-lightest border-red-light text-red-dark mb-2 border pl-4 pr-8 py-3 rounded relative' role='alert'>
+      <strong className='font-bold'>錯誤</strong>：
+      <span className='block sm:inline'>此時段無法排班 {errMsg}</span>
+    </div>
   }
 
   render () {
