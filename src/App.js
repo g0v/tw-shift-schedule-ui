@@ -293,7 +293,7 @@ class App extends Component {
         shifts.push([`${item.startDate} ${item.startTime}:00`, `${item.endDate} ${item.endTime}:00`])
       }
 
-      let schedule = shift.Schedule.fromTime(shifts)
+      let schedule = shift.Schedule.fromTime(shifts, { format: 'YYYY-MM-DD HH:mm:ss' })
       overworkCauses = shift.overwork.check(schedule)
 
       switch (this.state.settings.selectedTransform) {
