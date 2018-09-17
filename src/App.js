@@ -22,7 +22,7 @@ class App extends Component {
       publishID: undefined, // 發佈出去的 ID，由 firebase 產生
       docID: undefined, // local 建立的暫存 ID
       loading: true,
-      settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none', title: undefined },
+      settings: { hiddenBefore: 0, hiddenAfter: 0, selectedTransform: 'none', title: '未命名文件' },
       checkInTime: checkInTime,
       canvasWrapSize: consts.canvasDefaultSize,
       mobileCanvasWrapSize: consts.mobileCanvasDefaultSize,
