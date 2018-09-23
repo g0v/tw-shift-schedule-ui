@@ -351,7 +351,7 @@ class App extends Component {
           <div className='py-8 flex justify-between'>
             <h1 className='hover:bg-white f-6 text-black mx-auto sm:mx-0' onClick={this.updateTitle.bind(this)}>{this.state.settings.title || '未命名文件'}</h1>
             {!this.state.writable ? <div />
-              : <div className='hidden sm:flex'>
+              : <div className='print:hidden hidden sm:flex'>
                 <div className='leading-loose pt-2'><a href='https://g0v.hackmd.io/s/SJ6YXCw7Q' target='_blank' rel='noopener noreferrer'>匯入說明<i className='far fa-question-circle' /></a></div>
                 <CSVUpload callback={this.handleCSVUpload.bind(this)} />
                 <div className='nav-btn ml-2 bg-blue text-white' onClick={this.checkIn.bind(this)}>

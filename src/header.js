@@ -2,7 +2,7 @@ var React = require('react')
 
 class Header extends React.Component {
   render () {
-    return <div className='w-full bg-white border-t-2 border-red'>
+    return <div className='print:hidden w-full bg-white border-t-2 border-red'>
       <div className='max-w-2xl m-auto p-3'>
         <div className='flex justify-between w-full'>
           <div>
